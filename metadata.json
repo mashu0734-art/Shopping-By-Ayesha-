@@ -1,0 +1,6 @@
+{
+  "name": "Shopping By Ayesha",
+  "description": "Luxurious black and neon-pink e-commerce boutique featuring handcrafted high jewellery, designer bags, and glamorous couture fashion.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
