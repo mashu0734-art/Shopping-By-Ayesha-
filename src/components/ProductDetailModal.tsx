@@ -34,7 +34,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!isOpen || !product) return null;
   const t = useTranslation(language);
 
-  const [activeImage, setActiveImage] = useState(product.image);
+  const images = Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : product.image
+    ? [product.image]
+    : [];
+
+  const [activeImage, setActiveImage] = useState(images[0] || '');
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0]?.name || '');
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '');
   const [quantity, setQuantity] = useState(1);
@@ -45,7 +51,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [isEditingPrice, setIsEditingPrice] = useState(false);
   const [newPriceInput, setNewPriceInput] = useState(product.price.toString());
 
-  const images = [product.image, ...(product.secondaryImage ? [product.secondaryImage] : [])];
+  React.useEffect(() => {
+    const imgs = Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : product.image
+      ? [product.image]
+      : [];
+    setActiveImage(imgs[0] || '');
+    setSelectedColor(product.colors?.[0]?.name || '');
+    setSelectedSize(product.sizes?.[0] || '');
+    setNewPriceInput(product.price.toString());
+  }, [product]);
 
   const convertedPrice = (product.price * currency.rate).toFixed(0);
   const convertedOriginalPrice = product.originalPrice
@@ -132,7 +148,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   className="w-full py-2.5 px-3 rounded-xl bg-[#080509] hover:bg-[#FF168F] text-white border border-[#FF168F]/60 text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-sm"
                 >
                   <Camera className="w-3.5 h-3.5 text-[#FF8BC8]" />
-                  <span>Change Product Photo (Apni Pic Lgayein)</span>
+                  <span>{language === 'ur' ? 'تصویر تبدیل کریں (Change Photo)' : 'Change Product Photo'}</span>
                 </button>
               )}
             </div>
@@ -141,7 +157,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div className="mt-6 p-3.5 rounded-xl bg-[#080509]/80 border border-[#2e1a2b] flex items-center gap-3">
               <Gem className="w-5 h-5 text-[#FF168F] shrink-0" />
               <div className="text-xs text-zinc-300">
-                <strong className="text-white">Complimentary Signature Box:</strong> Arrives in illuminated pink velvet showcase case with magnetic closure.
+                <strong className="text-white">
+                  {language === 'ur' ? 'مفت سگنیچر باکس:' : 'Complimentary Signature Box:'}
+                </strong>{' '}
+                {language === 'ur'
+                  ? 'خصوصی گلابی ویلوٹ شوکیس باکس میں محفوظ پیکنگ کے ساتھ ڈیلیور ہوگا۔'
+                  : 'Arrives in illuminated pink velvet showcase case with magnetic closure.'}
               </div>
             </div>
           </div>
@@ -265,10 +286,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                 <div className="flex items-center justify-between text-xs pt-1 border-t border-[#2e1a2b]/60">
                   <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                    ✓ 100% Cash On Delivery
+                    ✓ {language === 'ur' ? '100٪ کیش آن ڈیلیوری' : '100% Cash On Delivery'}
                   </span>
                   <span className="text-zinc-400 text-[11px]">
-                    In Stock & Ready to Ship
+                    {language === 'ur' ? 'اسٹاک دستیاب ہے & فوری ترسیل' : 'In Stock & Ready to Ship'}
                   </span>
                 </div>
               </div>
@@ -277,7 +298,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {product.materials && product.materials.length > 0 && (
                 <div className="p-3.5 rounded-xl bg-[#171017] border border-[#2e1a2b] space-y-1">
                   <div className="text-[11px] font-bold text-[#FF8BC8] uppercase tracking-wider">
-                    {language === 'ur' ? 'کپڑا / فیبرک (Fabric / Material):' : 'Fabric / Material:'}
+                    {language === 'ur' ? 'کپڑا / فیبرک:' : 'Fabric / Material:'}
                   </div>
                   <div className="text-xs text-white font-medium">
                     {product.materials.join(', ')}
@@ -289,28 +310,44 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {product.colors && product.colors.length > 0 && (
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center justify-between">
-                    <span>{language === 'ur' ? 'دستیاب رنگ (Available Colors):' : 'Available Colors:'}</span>
+                    <span>{language === 'ur' ? 'دستیاب رنگ:' : 'Available Colors:'}</span>
                     <span className="text-[#FF8BC8] font-bold">{selectedColor || product.colors[0]?.name}</span>
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {product.colors.map((c) => (
-                      <button
-                        key={c.name}
-                        type="button"
-                        onClick={() => setSelectedColor(c.name)}
-                        className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-                          selectedColor === c.name || (!selectedColor && product.colors[0]?.name === c.name)
-                            ? 'border-[#FF168F] bg-[#FF168F]/20 text-white shadow-[0_0_12px_rgba(255,22,143,0.5)]'
-                            : 'border-[#2e1a2b] bg-[#171017] text-zinc-300 hover:border-[#FF168F]/40'
-                        }`}
-                      >
-                        <span
-                          className="w-3.5 h-3.5 rounded-full border border-black shadow-sm"
-                          style={{ backgroundColor: c.hex }}
-                        />
-                        <span>{c.name}</span>
-                      </button>
-                    ))}
+                    {product.colors.map((c) => {
+                      const isSelected = selectedColor === c.name || (!selectedColor && product.colors[0]?.name === c.name);
+                      return (
+                        <button
+                          key={c.name}
+                          type="button"
+                          onClick={() => {
+                            setSelectedColor(c.name);
+                            if (c.image) {
+                              setActiveImage(c.image);
+                            } else if (product.colorImages?.[c.name]) {
+                              setActiveImage(product.colorImages[c.name]);
+                            } else {
+                              const cIdx = product.colors.findIndex((col) => col.name === c.name);
+                              if (cIdx >= 0 && images[cIdx]) {
+                                setActiveImage(images[cIdx]);
+                              }
+                            }
+                          }}
+                          className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
+                            isSelected
+                              ? 'border-[#FF168F] bg-[#FF168F]/30 text-white shadow-[0_0_15px_rgba(255,22,143,0.5)] ring-2 ring-[#FF168F]/60'
+                              : 'border-[#2e1a2b] bg-[#171017] text-zinc-300 hover:border-[#FF168F]/50 hover:text-white'
+                          }`}
+                        >
+                          <span
+                            className="w-4 h-4 rounded-full border border-black/80 shadow-md shrink-0"
+                            style={{ backgroundColor: c.hex }}
+                          />
+                          <span>{c.name}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-[#FF8BC8] shrink-0" />}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -319,7 +356,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {product.description && (
                 <div className="p-3.5 rounded-xl bg-[#171017] border border-[#2e1a2b] space-y-1">
                   <div className="text-[11px] font-bold text-[#FF8BC8] uppercase tracking-wider">
-                    {language === 'ur' ? 'تفصیل (Description):' : 'Description:'}
+                    {language === 'ur' ? 'مکمل تفصیل:' : 'Full Description:'}
                   </div>
                   <p className="text-xs text-zinc-200 leading-relaxed font-sans whitespace-pre-line">
                     {product.description}
@@ -355,12 +392,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     {addedAnimation ? (
                       <>
                         <Check className="w-4 h-4 text-white" />
-                        <span>Added to Bag!</span>
+                        <span>{language === 'ur' ? 'بیگ میں شامل ہو گیا!' : 'Added to Bag!'}</span>
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="w-4 h-4 text-white" />
-                        <span>Add to Bag</span>
+                        <span>{t.product.addToBag}</span>
                       </>
                     )}
                   </button>
@@ -370,7 +407,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   onClick={handleBuyNow}
                   className="w-full py-3.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider btn-neon-pink text-white transition-all flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(255,22,143,0.6)]"
                 >
-                  <span>{language === 'ur' ? 'آرڈر کریں (Order Now)' : 'Order Now'}</span>
+                  <span>{t.product.orderNow}</span>
                   <ArrowRight className="w-4 h-4 text-[#FFD6EA]" />
                 </button>
               </div>

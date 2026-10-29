@@ -31,12 +31,13 @@ export interface Product {
   originalPrice?: number;
   rating: number;
   reviewsCount: number;
-  image: string;
-  secondaryImage?: string;
+  images: string[];
+  image?: string;
   tag?: string;
   description: string;
   materials: string[];
-  colors: { name: string; hex: string }[];
+  colors: { name: string; hex: string; image?: string }[];
+  colorImages?: Record<string, string>;
   sizes?: string[];
   inStock: boolean;
   featured?: boolean;
@@ -68,6 +69,7 @@ export interface FilterState {
   minPrice: number;
   maxPrice: number;
   onlyInStock: boolean;
+  selectedColor?: string;
 }
 
 export interface UserAccount {

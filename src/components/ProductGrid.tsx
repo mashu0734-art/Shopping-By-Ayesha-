@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { SlidersHorizontal, Search, RotateCcw, Sparkles, Plus } from 'lucide-react';
+import { SlidersHorizontal, Search, RotateCcw, Sparkles, Plus, RefreshCw } from 'lucide-react';
 import { Product, Currency, FilterState, Language } from '../types';
 import { ProductCard } from './ProductCard';
 import { useTranslation } from '../translations';
@@ -10,8 +10,10 @@ interface ProductGridProps {
   wishlist: string[];
   filterState: FilterState;
   language: Language;
+  onSelectLanguage?: (lang: Language) => void;
   onUpdateFilters: (updates: Partial<FilterState>) => void;
   onResetFilters: () => void;
+  onResetCatalog?: () => void;
   onToggleWishlist: (product: Product) => void;
   onAddToCart: (product: Product, color?: string, size?: string) => void;
   onQuickView: (product: Product) => void;
@@ -25,8 +27,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   wishlist,
   filterState,
   language,
+  onSelectLanguage,
   onUpdateFilters,
   onResetFilters,
+  onResetCatalog,
   onToggleWishlist,
   onAddToCart,
   onQuickView,
@@ -91,6 +95,13 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       if (filterState.subcategory && filterState.subcategory !== 'All' && p.subcategory !== filterState.subcategory) {
         return false;
       }
+      // Color filter: customer clicks on any color
+      if (filterState.selectedColor && filterState.selectedColor !== 'All') {
+        const hasColor = p.colors?.some(
+          (c) => c.name.toLowerCase() === filterState.selectedColor!.toLowerCase()
+        );
+        if (!hasColor) return false;
+      }
       // Search Query filter
       if (filterState.searchQuery.trim() !== '') {
         const query = filterState.searchQuery.toLowerCase();
@@ -99,7 +110,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         const matchesSub = p.subtitle.toLowerCase().includes(query);
         const matchesCat = p.category.toLowerCase().includes(query);
         const matchesSubcat = (p.subcategory || '').toLowerCase().includes(query);
-        if (!matchesName && !matchesDesc && !matchesSub && !matchesCat && !matchesSubcat) {
+        const matchesColor = p.colors?.some((c) => c.name.toLowerCase().includes(query));
+        if (!matchesName && !matchesDesc && !matchesSub && !matchesCat && !matchesSubcat && !matchesColor) {
           return false;
         }
       }
@@ -107,8 +119,9 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       if (filterState.onlyInStock && !p.inStock) {
         return false;
       }
-      // Price range
-      if (p.price < filterState.minPrice || p.price > filterState.maxPrice) {
+      // Price range check (with fallback max limit so Pakistani suit prices are never blocked)
+      const maxLimit = filterState.maxPrice > 2000 ? filterState.maxPrice : 500000;
+      if (p.price < filterState.minPrice || p.price > maxLimit) {
         return false;
       }
       return true;
@@ -123,12 +136,15 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
   const getSectionTitle = () => {
     if (language === 'ur') {
-      if (filterState.category === 'Dresses') return 'ملبوسات کلیکشن (Dresses)';
-      if (filterState.category === 'Jewellery') return 'شاہی زیورات کلیکشن (Jewellery)';
-      if (filterState.category === 'Bags') return 'ڈیزائنر بیگز کلیکشن (Bags)';
-      return 'تمام کلیکشنز (All Collections)';
+      if (filterState.category === 'Dresses') return t.product.dressesCollection;
+      if (filterState.category === 'Jewellery') return t.product.jewelleryCollection;
+      if (filterState.category === 'Bags') return t.product.bagsCollection;
+      return t.product.allCollections;
     }
-    if (filterState.category === 'All') return 'The Complete Collection';
+    if (filterState.category === 'All') return t.product.allCollections;
+    if (filterState.category === 'Dresses') return t.product.dressesCollection;
+    if (filterState.category === 'Jewellery') return t.product.jewelleryCollection;
+    if (filterState.category === 'Bags') return t.product.bagsCollection;
     return `${filterState.category} Collection`;
   };
 
@@ -136,31 +152,34 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     <section id="collection" className="bg-[#080509] py-10 sm:py-16 border-b border-[#2e1a2b]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
-        <div className="flex items-center justify-between gap-4 pb-4 border-b border-[#2e1a2b]">
+        {/* Section Header with Product Title & Dedicated Products-Area Language Switcher */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#2e1a2b]">
           <div>
             <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[#FF168F] font-bold mb-1">
               <Sparkles className="w-3.5 h-3.5 text-[#FF168F]" />
-              <span>{language === 'ur' ? 'شاپنگ بائے عائشہ ورائٹی' : 'Curated Haute Line'}</span>
+              <span>{t.product.curatedLine}</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-tight">
               {getSectionTitle()}
             </h2>
           </div>
 
-          {onOpenProductManager && (
-            <button
-              onClick={onOpenProductManager}
-              className="btn-neon-pink px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_12px_rgba(255,22,143,0.4)] shrink-0"
-              title="Add product photo and details"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>{language === 'ur' ? 'پراڈکٹ لگائیں' : 'Add Product'}</span>
-            </button>
-          )}
+          {/* Action Group: Add Product (Clean and prominent, language buttons removed as requested) */}
+          <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+            {onOpenProductManager && (
+              <button
+                onClick={onOpenProductManager}
+                className="btn-neon-pink px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_18px_rgba(255,22,143,0.5)] shrink-0 hover:shadow-[0_0_25px_rgba(255,22,143,0.8)] transition-all cursor-pointer"
+                title="Add product photo and details"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{t.product.addProduct}</span>
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Filter Controls Bar (Search & Sort controls, redundant horizontal category row removed as circled) */}
+        {/* Filter Controls Bar (Search & Sort controls) */}
         <div className="py-5 flex flex-wrap items-center justify-between gap-3">
           
           {/* Search Input */}
@@ -200,19 +219,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               </select>
             </div>
 
-            {/* Stock Filter Checkbox */}
-            <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer bg-[#171017] border border-[#2e1a2b] rounded-lg px-3 py-2 hover:border-[#FF168F]/40 transition-colors">
-              <input
-                type="checkbox"
-                checked={filterState.onlyInStock}
-                onChange={(e) => onUpdateFilters({ onlyInStock: e.target.checked })}
-                className="rounded accent-[#FF168F] text-[#FF168F] focus:ring-0"
-              />
-              <span className="whitespace-nowrap">{t.filter.inStockOnly}</span>
-            </label>
-
             {/* Reset Filters button if active filters exist */}
-            {(filterState.category !== 'All' || (filterState.subcategory && filterState.subcategory !== 'All') || filterState.searchQuery !== '' || filterState.onlyInStock) && (
+            {(filterState.category !== 'All' || (filterState.subcategory && filterState.subcategory !== 'All') || filterState.searchQuery !== '') && (
               <button
                 onClick={onResetFilters}
                 className="p-2 rounded-lg bg-[#171017] border border-[#2e1a2b] hover:border-[#FF168F] text-zinc-400 hover:text-[#FF168F] transition-colors"
@@ -225,7 +233,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         </div>
 
         {/* Subcategory Pills Row (Winter, Summer, Fancy, Jhumkay, Rings, Complete Sets, Clutches, Handbags, etc.) */}
-        <div className="pb-6 pt-1 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        <div className="pb-5 pt-1 flex items-center gap-2 overflow-x-auto scrollbar-none">
           <span className="text-[11px] text-[#FF8BC8] font-bold uppercase tracking-wider whitespace-nowrap mr-1">
             {t.filter.selectType}
           </span>
@@ -265,29 +273,59 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             ))}
           </div>
         ) : (
-          <div className="py-16 text-center rounded-2xl bg-[#171017]/80 border border-[#FF168F]/40 p-8 sm:p-10 max-w-lg mx-auto space-y-5 shadow-[0_0_30px_rgba(255,22,143,0.15)]">
+          <div className="py-16 text-center rounded-2xl bg-[#171017]/90 border border-[#FF168F]/50 p-8 sm:p-10 max-w-lg mx-auto space-y-6 shadow-[0_0_35px_rgba(255,22,143,0.25)]">
             <div className="w-16 h-16 mx-auto rounded-full bg-[#FF168F]/20 border border-[#FF168F]/60 flex items-center justify-center text-[#FF168F] shadow-[0_0_20px_rgba(255,22,143,0.4)]">
               <Sparkles className="w-8 h-8" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-serif text-xl font-bold text-white">
-                {language === 'ur' ? 'اسٹور تیار ہے (خوش آمدید!)' : 'Your Store Is Empty & Ready!'}
+              <h3 className="font-serif text-xl sm:text-2xl font-bold text-white">
+                {products.length === 0
+                  ? (language === 'ur' ? 'تمام پروڈکٹس لوڈ کریں' : 'Load All Boutique Products')
+                  : (language === 'ur' ? 'کوئی پروڈکٹ میچ نہیں ہوا' : 'No Products Match Selected Filters')}
               </h3>
-              <p className="text-xs text-zinc-300 leading-relaxed max-w-sm mx-auto">
-                {language === 'ur'
-                  ? 'تمام نوزائیدہ سیمپل پروڈکٹس ریموو کر دیے گئے ہیں۔ اپنے ڈریسز، جیولری یا بیگز کی تصاویر، قیمت (Rs.) اور رنگ شامل کرنے کے لیے بٹن پر کلک کریں۔'
-                  : 'All sample products have been cleared. Click below to add your authentic dresses, jewellery, and bags with prices in Rs. and custom suit colors.'}
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed max-w-sm mx-auto">
+                {products.length === 0
+                  ? (language === 'ur'
+                      ? 'تمام فینسی و ونٹر سوٹس، شاہی زیورات اور بیگز کی مکمل ورائٹی دیکھنے کے لیے نیچے کلک کریں۔'
+                      : 'Click below to instantly display all winter and summer suits, royal jewellery sets, and designer bags.')
+                  : (language === 'ur'
+                      ? 'موجودہ فلٹرز کو ختم کریں تاکہ تمام ورائٹی سامنے نظر آئے۔'
+                      : 'Clear your active filters or search query to see all available creations.')}
               </p>
             </div>
-            {onOpenProductManager && (
-              <button
-                onClick={onOpenProductManager}
-                className="btn-neon-pink px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-[0_0_20px_rgba(255,22,143,0.5)] hover:shadow-[0_0_30px_rgba(255,22,143,0.8)] transition-all"
-              >
-                <Plus className="w-4 h-4" />
-                <span>{language === 'ur' ? '+ اپنی پہلی پروڈکٹ شامل کریں' : '+ Add Your First Product'}</span>
-              </button>
-            )}
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              {products.length === 0 && onResetCatalog ? (
+                <button
+                  type="button"
+                  onClick={onResetCatalog}
+                  className="btn-neon-pink w-full sm:w-auto px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,22,143,0.6)]"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span>{language === 'ur' ? 'تمام پروڈکٹس لوڈ کریں' : 'Show All Products'}</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onResetFilters}
+                  className="btn-neon-pink w-full sm:w-auto px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,22,143,0.6)]"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>{language === 'ur' ? 'تمام پراڈکٹس دکھائیں (ری سیٹ)' : 'Show All Products'}</span>
+                </button>
+              )}
+
+              {onOpenProductManager && (
+                <button
+                  type="button"
+                  onClick={onOpenProductManager}
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 bg-[#2e1a2b] hover:bg-[#3d233a] text-white border border-[#FF168F]/40 transition-all"
+                >
+                  <Plus className="w-4 h-4 text-[#FF8BC8]" />
+                  <span>{language === 'ur' ? 'نیا سوٹ شامل کریں' : '+ Add Product'}</span>
+                </button>
+              )}
+            </div>
           </div>
         )}
 

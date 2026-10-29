@@ -83,7 +83,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                   >
                     <div className="relative w-20 h-24 rounded-lg overflow-hidden bg-[#0d090e] shrink-0 border border-[#2e1a2b]">
                       <img
-                        src={product.image}
+                        src={product.images?.[0] || product.image || ''}
                         alt={product.name}
                         className="w-full h-full object-cover"
                         referrerPolicy="no-referrer"

@@ -19,15 +19,59 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   currency,
   isWishlisted,
-  language = 'ur',
+  language = 'en',
   onToggleWishlist,
   onAddToCart,
   onQuickView,
   onOpenQuickPhotoChange,
 }) => {
   const t = useTranslation(language);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const isDataUri = typeof product.image === 'string' && (product.image.startsWith('data:') || product.images?.[0]?.startsWith('data:'));
+  const [imageLoaded, setImageLoaded] = useState(() => isDataUri);
   const [isHovered, setIsHovered] = useState(false);
+
+  // Helper to determine the photo corresponding to a specific color
+  const getColorImage = (colorName: string): string => {
+    const allImages = Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : product.image
+      ? [product.image]
+      : [];
+    if (!colorName) return allImages[0] || '';
+
+    const colorIndex = product.colors?.findIndex(
+      (c) => c.name.toLowerCase() === colorName.toLowerCase()
+    ) ?? -1;
+    const colorObj = colorIndex >= 0 ? product.colors[colorIndex] : undefined;
+
+    // 1. Direct photo attached to this color object
+    if (colorObj?.image) return colorObj.image;
+    // 2. Direct mapping in colorImages record
+    if (product.colorImages && product.colorImages[colorName]) return product.colorImages[colorName];
+    // 3. Fallback to image at the same index in the images array
+    if (colorIndex >= 0 && allImages[colorIndex]) return allImages[colorIndex];
+    // 4. Default to primary image
+    return allImages[0] || '';
+  };
+
+  const initialColor = product.colors && product.colors.length > 0 ? product.colors[0].name : '';
+  const [selectedColor, setSelectedColor] = useState<string>(initialColor);
+  const [currentImage, setCurrentImage] = useState<string>(() => getColorImage(initialColor));
+
+  // Sync when product props change
+  React.useEffect(() => {
+    const newColor = product.colors && product.colors.length > 0 ? product.colors[0].name : '';
+    setSelectedColor(newColor);
+    setCurrentImage(getColorImage(newColor));
+  }, [product]);
+
+  const handleColorClick = (colorName: string) => {
+    setSelectedColor(colorName);
+    const newImg = getColorImage(colorName);
+    if (newImg) {
+      setCurrentImage(newImg);
+    }
+  };
 
   const convertedPrice = (product.price * currency.rate).toFixed(0);
   const convertedOriginalPrice = product.originalPrice
@@ -43,29 +87,38 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Visual Product Showcase (65-75% height proportion) */}
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#0d090e] cursor-pointer" onClick={() => onQuickView(product)}>
         {/* Fallback & Loading Shimmer */}
-        {!imageLoaded && (
+        {!imageLoaded && !isDataUri && (
           <div className="absolute inset-0 bg-[#1f141f] animate-pulse flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-[#FF168F]/40" />
           </div>
         )}
 
-        {/* Primary and secondary hover image */}
+        {/* Displayed Image with smooth color change */}
         <img
-          src={isHovered && product.secondaryImage ? product.secondaryImage : product.image}
+          src={currentImage || (product.images && product.images[0]) || product.image || ''}
           alt={product.name}
           onLoad={() => setImageLoaded(true)}
-          className={`h-full w-full object-cover object-center transition-all duration-700 ease-out ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
+          className={`h-full w-full object-cover object-center transition-all duration-500 ease-out ${
+            (imageLoaded || isDataUri) ? 'opacity-100' : 'opacity-90'
           } ${isHovered ? 'scale-105' : 'scale-100'}`}
           referrerPolicy="no-referrer"
         />
 
         {/* Subtle contrast gradient scrim for edge definition */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#171017] via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#171017] via-transparent to-transparent opacity-60 pointer-events-none" />
+
+        {/* Selected Color Badge overlay on photo */}
+        {selectedColor && (
+          <div className="absolute bottom-3 left-3 z-10 pointer-events-none">
+            <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-black/85 backdrop-blur-md text-[#FFD6EA] border border-[#FF168F]/50 shadow">
+              {selectedColor}
+            </span>
+          </div>
+        )}
 
         {/* Neon Pink Sale / Drop Badge */}
         {product.tag && (
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 pointer-events-none">
             <span className="px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase rounded bg-[#FF168F] text-white shadow-[0_0_12px_rgba(255,22,143,0.6)]">
               {product.tag}
             </span>
@@ -117,6 +170,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
+      {/* Interactive Color Switcher Bar directly under the photo */}
+      {product.colors && product.colors.length > 0 && (
+        <div className="px-3 py-2 bg-[#120a13] border-b border-[#2e1a2b] flex items-center justify-between gap-1.5 z-10">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 flex-1">
+            {product.colors.map((color, idx) => {
+              const isCurSelected = selectedColor === color.name || (!selectedColor && idx === 0);
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleColorClick(color.name);
+                  }}
+                  className={`group relative flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all shrink-0 ${
+                    isCurSelected
+                      ? 'border-[#FF168F] bg-[#FF168F]/30 text-white ring-1 ring-[#FF168F] shadow-[0_0_10px_rgba(255,22,143,0.5)] font-bold'
+                      : 'border-[#2e1a2b] bg-[#171017] text-zinc-300 hover:border-[#FF168F]/60 hover:text-white'
+                  }`}
+                  title={`${color.name} - Click to see suit in this color`}
+                >
+                  <span
+                    className="w-3.5 h-3.5 rounded-full border border-black/80 shadow-sm shrink-0"
+                    style={{ backgroundColor: color.hex }}
+                  />
+                  <span className="truncate max-w-[85px]">{color.name.split('(')[0].trim()}</span>
+                </button>
+              );
+            })}
+          </div>
+          <span className="text-[10px] text-[#FF8BC8] font-bold shrink-0 ml-1">
+            {product.colors.length} {language === 'ur' ? 'رنگ' : 'Colors'}
+          </span>
+        </div>
+      )}
+
       {/* Product Content Details */}
       <div className="p-4 sm:p-5 flex flex-col flex-grow justify-between bg-[#171017]">
         <div>
@@ -144,24 +233,45 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </h3>
 
           {/* Subtitle / Key description snippet */}
-          <p className="text-xs text-zinc-400 line-clamp-1 mt-1 font-light">
-            {product.subtitle}
+          <p className="text-xs text-zinc-400 line-clamp-2 mt-1 font-light leading-relaxed">
+            {product.description || product.subtitle}
           </p>
 
-          {/* Color swatches preview */}
+          {/* Color Swatch Dots with click action */}
           {product.colors && product.colors.length > 0 && (
-            <div className="flex items-center gap-1.5 mt-3">
-              {product.colors.map((color, idx) => (
-                <span
-                  key={idx}
-                  className="w-3 h-3 rounded-full border border-black/50 shadow-sm"
-                  style={{ backgroundColor: color.hex }}
-                  title={color.name}
-                />
-              ))}
-              <span className="text-[10px] text-zinc-500 ml-1">
-                {product.colors.length} {product.colors.length === 1 ? 'color' : 'colors'}
-              </span>
+            <div className="mt-3 pt-2 border-t border-[#2e1a2b]/60">
+              <div className="flex items-center justify-between text-[10px] text-zinc-400 mb-1.5">
+                <span>{t.product.selectColor}</span>
+                <span className="text-[#FF8BC8] font-semibold truncate max-w-[130px]">
+                  {selectedColor || product.colors[0]?.name}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {product.colors.map((color, idx) => {
+                  const isCurSelected = selectedColor === color.name || (!selectedColor && idx === 0);
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleColorClick(color.name);
+                      }}
+                      className={`relative w-5 h-5 rounded-full border transition-all flex items-center justify-center ${
+                        isCurSelected
+                          ? 'border-[#FF168F] ring-2 ring-[#FF168F]/70 scale-110 shadow-[0_0_8px_#FF168F]'
+                          : 'border-zinc-700 hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: color.hex }}
+                      title={color.name}
+                    >
+                      {isCurSelected && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-white shadow" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -187,18 +297,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="shrink-0 w-full sm:w-auto">
             <button
               onClick={() => {
-                const defaultColor = product.colors?.[0]?.name;
+                const activeColor = selectedColor || product.colors?.[0]?.name;
                 const defaultSize = product.sizes?.[0];
-                onAddToCart(product, defaultColor, defaultSize);
+                onAddToCart(product, activeColor, defaultSize);
                 // Also trigger checkout directly
-                const event = new CustomEvent('sba-instant-order', { detail: { product, color: defaultColor, size: defaultSize } });
+                const event = new CustomEvent('sba-instant-order', { detail: { product, color: activeColor, size: defaultSize } });
                 window.dispatchEvent(event);
               }}
               className="w-full sm:w-auto px-4 py-2.5 rounded-lg btn-neon-pink text-white text-[11px] font-bold uppercase tracking-wider hover:shadow-[0_0_15px_rgba(255,22,143,0.7)] transition-all flex items-center justify-center gap-1"
               aria-label={`Order Now - ${product.name}`}
-              title="Order Now"
+              title={t.product.orderNow}
             >
-              <span>{language === 'ur' ? 'آرڈر' : 'Order Now'}</span>
+              <span>{t.product.orderNow}</span>
             </button>
           </div>
         </div>

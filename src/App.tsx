@@ -17,12 +17,13 @@ import { AuthModal } from './components/AuthModal';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { INITIAL_PRODUCTS, CURRENCIES } from './data/products';
 import { Product, CartItem, Currency, CurrencyCode, FilterState, PlacedOrder, UserAccount, Language } from './types';
+import { loadSavedProducts, saveProductsReliably } from './utils/storage';
 
 export default function App() {
-  // Language State: 'ur' (Urdu) by default, or 'en' (English) with localStorage persistence
+  // Language State: 'en' (English) by default as requested, switching to 'ur' on click
   const [language, setLanguage] = useState<Language>(() => {
     const saved = localStorage.getItem('sba_lang');
-    return (saved === 'en' || saved === 'ur') ? saved : 'ur';
+    return (saved === 'en' || saved === 'ur') ? saved : 'en';
   });
 
   const handleSelectLanguage = (lang: Language) => {
@@ -40,29 +41,46 @@ export default function App() {
     }
   });
 
-  // Products with localStorage persistence so owner custom uploads & photos stay saved!
+  // Products with rock-solid IndexedDB & localStorage persistence
   const [products, setProducts] = useState<Product[]>(() => {
     try {
-      // Clear legacy sample products once for a clean fresh store
-      if (!localStorage.getItem('sba_cleared_samples_v1')) {
-        localStorage.setItem('sba_cleared_samples_v1', 'true');
-        localStorage.removeItem('sba_products');
-        localStorage.removeItem('sba_cart');
-        localStorage.removeItem('sba_wishlist');
-        return [];
-      }
       const saved = localStorage.getItem('sba_products');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((p: any) => {
+            const imgs: string[] = Array.isArray(p.images) && p.images.length > 0
+              ? p.images
+              : p.image
+              ? [p.image]
+              : [];
+            return {
+              ...p,
+              images: imgs,
+              image: imgs[0] || p.image || '',
+            };
+          });
         }
       }
     } catch (e) {
       console.error('Failed to load saved products', e);
     }
-    return [];
+    // Default to INITIAL_PRODUCTS so the storefront is never empty!
+    return INITIAL_PRODUCTS;
   });
+
+  // Load from IndexedDB on startup (unlimited storage quota)
+  useEffect(() => {
+    loadSavedProducts().then((loaded) => {
+      if (loaded && loaded.length > 0) {
+        setProducts(loaded);
+      } else {
+        // Automatically seed default catalog into IndexedDB and localStorage
+        setProducts(INITIAL_PRODUCTS);
+        saveProductsReliably(INITIAL_PRODUCTS);
+      }
+    });
+  }, []);
 
   // Currency State - Defaults to PKR (Rs.)
   const [currency, setCurrency] = useState<Currency>(() => {
@@ -90,14 +108,14 @@ export default function App() {
     }
   });
 
-  // Filter State
+  // Filter State - Default maxPrice 200,000 covers all Pakistani designer suits and luxury sets
   const [filterState, setFilterState] = useState<FilterState>({
     category: 'All',
     subcategory: 'All',
     searchQuery: '',
     sortBy: 'featured',
     minPrice: 0,
-    maxPrice: 2000,
+    maxPrice: 200000,
     onlyInStock: false,
   });
 
@@ -111,6 +129,15 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isLookbookOpen, setIsLookbookOpen] = useState(false);
   const [isProductManagerOpen, setIsProductManagerOpen] = useState(false);
+
+  const handleOpenProductManager = () => {
+    setIsProductManagerOpen(true);
+  };
+
+  const handleCloseProductManager = () => {
+    setIsProductManagerOpen(false);
+  };
+
   const [quickPhotoProduct, setQuickPhotoProduct] = useState<Product | null>(null);
 
   const [promoDetails, setPromoDetails] = useState<{ code: string; discountAmount: number }>({
@@ -123,7 +150,7 @@ export default function App() {
 
   const showNotification = (msg: string) => {
     setNotification(msg);
-    setTimeout(() => setNotification(null), 3000);
+    setTimeout(() => setNotification(null), 4000);
   };
 
   const handleLogin = (user: UserAccount) => {
@@ -138,13 +165,9 @@ export default function App() {
     showNotification('Logged out successfully');
   };
 
-  // Sync products to localStorage
+  // Sync products to IndexedDB & safe localStorage
   useEffect(() => {
-    try {
-      localStorage.setItem('sba_products', JSON.stringify(products));
-    } catch (e) {
-      console.error('Failed to save products to localStorage', e);
-    }
+    saveProductsReliably(products);
   }, [products]);
 
   // Sync cart to localStorage
@@ -187,53 +210,90 @@ export default function App() {
 
   // Product Management Handlers (Owner Features)
   const handleAddProduct = (newProduct: Product) => {
-    setProducts((prev) => [newProduct, ...prev]);
-    showNotification(`Added "${newProduct.name}" to ${newProduct.category}`);
+    const normalized: Product = {
+      ...newProduct,
+      image: (newProduct.images && newProduct.images[0]) || (newProduct as any).image || '',
+    };
+    const updated = [normalized, ...products];
+    setProducts(updated);
+    saveProductsReliably(updated);
+
+    // Reset filters so newly added product is guaranteed visible at the top!
+    setFilterState({
+      category: 'All',
+      subcategory: 'All',
+      searchQuery: '',
+      sortBy: 'newest',
+      minPrice: 0,
+      maxPrice: 200000,
+      onlyInStock: false,
+      selectedColor: undefined,
+    });
+
+    // Scroll to collection smoothly
+    setTimeout(() => {
+      const el = document.getElementById('collection');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 150);
+
+    showNotification(`🎉 مبارک ہو! سوٹ "${newProduct.name}" کامیابی سے اسٹور میں لگ گیا ہے!`);
   };
 
   const handleUpdateProduct = (updatedProduct: Product) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-    );
-    if (selectedProduct && selectedProduct.id === updatedProduct.id) {
-      setSelectedProduct(updatedProduct);
+    const normalized: Product = {
+      ...updatedProduct,
+      image: (updatedProduct.images && updatedProduct.images[0]) || (updatedProduct as any).image || '',
+    };
+    setProducts((prev) => {
+      const updated = prev.map((p) => (p.id === normalized.id ? normalized : p));
+      saveProductsReliably(updated);
+      return updated;
+    });
+    if (selectedProduct && selectedProduct.id === normalized.id) {
+      setSelectedProduct(normalized);
     }
-    showNotification(`Updated "${updatedProduct.name}"`);
+    showNotification(`آرٹیکل "${normalized.name}" اپڈیٹ ہو گیا ہے!`);
   };
 
-  const handleUpdateProductPhoto = (productId: string, newImageUrl: string, secondaryImageUrl?: string) => {
-    setProducts((prev) =>
-      prev.map((p) => {
+  const handleUpdateProductPhotos = (productId: string, newImages: string[]) => {
+    setProducts((prev) => {
+      const updated = prev.map((p) => {
         if (p.id === productId) {
           return {
             ...p,
-            image: newImageUrl,
-            secondaryImage: secondaryImageUrl || p.secondaryImage,
+            images: newImages,
+            image: newImages[0] || '',
           };
         }
         return p;
-      })
-    );
+      });
+      saveProductsReliably(updated);
+      return updated;
+    });
 
     // Also update active modal if currently opened
     if (selectedProduct && selectedProduct.id === productId) {
-      setSelectedProduct((prev) => (prev ? { ...prev, image: newImageUrl } : null));
+      setSelectedProduct((prev) => (prev ? { ...prev, images: newImages, image: newImages[0] || '' } : null));
     }
 
-    showNotification('Product photo updated successfully!');
+    showNotification('تصاویر کامیابی سے تبدیل ہو گئیں!');
   };
 
   const handleDeleteProduct = (productId: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== productId));
+    setProducts((prev) => {
+      const updated = prev.filter((p) => p.id !== productId);
+      saveProductsReliably(updated);
+      return updated;
+    });
     if (selectedProduct && selectedProduct.id === productId) {
       setSelectedProduct(null);
     }
-    showNotification('Product removed from catalog');
+    showNotification('پروڈکٹ اسٹور سے ڈیلیٹ کر دی گئی');
   };
 
   const handleResetCatalog = () => {
     setProducts(INITIAL_PRODUCTS);
-    localStorage.removeItem('sba_products');
+    saveProductsReliably(INITIAL_PRODUCTS);
     showNotification('Catalog restored to default Dresses, Jewellery & Bags');
   };
 
@@ -384,6 +444,7 @@ export default function App() {
           wishlist={wishlist}
           filterState={filterState}
           language={language}
+          onSelectLanguage={handleSelectLanguage}
           onUpdateFilters={(updates) => setFilterState((prev) => ({ ...prev, ...updates }))}
           onResetFilters={() =>
             setFilterState({
@@ -392,15 +453,17 @@ export default function App() {
               searchQuery: '',
               sortBy: 'featured',
               minPrice: 0,
-              maxPrice: 2000,
+              maxPrice: 200000,
               onlyInStock: false,
+              selectedColor: undefined,
             })
           }
+          onResetCatalog={handleResetCatalog}
           onToggleWishlist={handleToggleWishlist}
           onAddToCart={(product, color, size) => handleAddToCart(product, color, size, 1)}
           onQuickView={(product) => setSelectedProduct(product)}
           onOpenQuickPhotoChange={(product) => setQuickPhotoProduct(product)}
-          onOpenProductManager={() => setIsProductManagerOpen(true)}
+          onOpenProductManager={handleOpenProductManager}
         />
 
         {/* VIP Circle Newsletter Section */}
@@ -411,7 +474,7 @@ export default function App() {
       <Footer
         onSelectCategory={handleCategorySelect}
         onOpenLookbook={() => setIsLookbookOpen(true)}
-        onOpenProductManager={() => setIsProductManagerOpen(true)}
+        onOpenProductManager={handleOpenProductManager}
       />
 
       {/* Product Detail Modal */}
@@ -485,8 +548,10 @@ export default function App() {
       {/* Owner Product Manager & Upload Modal */}
       <ProductManagerModal
         isOpen={isProductManagerOpen}
-        onClose={() => setIsProductManagerOpen(false)}
+        onClose={handleCloseProductManager}
         products={products}
+        language={language}
+        onSelectLanguage={handleSelectLanguage}
         onAddProduct={handleAddProduct}
         onUpdateProduct={handleUpdateProduct}
         onDeleteProduct={handleDeleteProduct}
@@ -499,7 +564,7 @@ export default function App() {
         product={quickPhotoProduct}
         isOpen={!!quickPhotoProduct}
         onClose={() => setQuickPhotoProduct(null)}
-        onUpdateProductPhoto={handleUpdateProductPhoto}
+        onUpdateProductPhotos={handleUpdateProductPhotos}
       />
 
       {/* 3-Lines Side Navigation Drawer (Article & Subcategory Types) */}
@@ -513,7 +578,7 @@ export default function App() {
         language={language}
         onSelectLanguage={handleSelectLanguage}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenProductManager={() => setIsProductManagerOpen(true)}
+        onOpenProductManager={handleOpenProductManager}
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}
       />

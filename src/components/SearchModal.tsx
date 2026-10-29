@@ -104,7 +104,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     className="flex items-center gap-4 p-3 rounded-xl bg-[#171017] border border-[#2e1a2b] hover:border-[#FF168F] cursor-pointer transition-all group"
                   >
                     <img
-                      src={product.image}
+                      src={product.images?.[0] || product.image || ''}
                       alt={product.name}
                       className="w-14 h-16 object-cover rounded-lg bg-black border border-[#2e1a2b] shrink-0"
                     />

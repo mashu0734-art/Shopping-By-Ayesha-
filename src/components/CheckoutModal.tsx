@@ -279,7 +279,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   {items.map((item, idx) => (
                     <div key={idx} className="flex items-center gap-3 text-xs">
                       <img
-                        src={item.product.image}
+                        src={item.product.images?.[0] || item.product.image || ''}
                         alt={item.product.name}
                         className="w-12 h-14 object-cover rounded-md bg-black border border-[#2e1a2b] shrink-0"
                       />
