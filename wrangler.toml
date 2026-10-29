@@ -1,3 +1,7 @@
 name = "shopping-by-ayesha"
 compatibility_date = "2024-11-01"
 pages_build_output_dir = "dist"
+
+[build]
+command = "npm install --legacy-peer-deps && npm run build"
+upload_dir = "dist"
