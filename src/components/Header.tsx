@@ -20,6 +20,7 @@ interface HeaderProps {
   onOpenAuth: () => void;
   onOpenAdminPanel?: () => void;
   currentUser: UserAccount | null;
+  isAdmin: boolean;
   language: Language;
   onSelectLanguage: (lang: Language) => void;
 }
@@ -39,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuth,
   onOpenAdminPanel,
   currentUser,
+  isAdmin,
   language,
   onSelectLanguage,
 }) => {
@@ -128,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             {/* Admin Panel Quick Access Button */}
-            {onOpenAdminPanel && (
+            {onOpenAdminPanel && isAdmin && (
               <button
                 type="button"
                 onClick={onOpenAdminPanel}

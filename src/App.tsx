@@ -570,6 +570,7 @@ export default function App() {
         onOpenAuth={() => setIsCustomerAccountOpen(true)}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
         currentUser={currentUser}
+        isAdmin={isAdmin}
         language={language}
         onSelectLanguage={handleSelectLanguage}
       />
@@ -624,7 +625,7 @@ export default function App() {
         onOpenLookbook={() => setIsLookbookOpen(true)}
         onOpenInfoPage={(p) => setInfoPage(p)}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
-        isAdmin={true}
+        isAdmin={isAdmin}
       />
 
       {/* Product Detail Modal */}
@@ -729,6 +730,7 @@ export default function App() {
         onLogout={handleLogout}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
         onAddPromoCode={handleAddPromoCode}
+        isAdmin={isAdmin}
       />
 
       {/* Public Store Policy & Contact Info Pages Modal */}
@@ -758,7 +760,7 @@ export default function App() {
         onSelectLanguage={handleSelectLanguage}
         onOpenAuth={() => setIsCustomerAccountOpen(true)}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
-        isAdmin={true}
+        isAdmin={isAdmin}
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}
       />

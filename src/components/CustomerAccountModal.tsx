@@ -27,6 +27,7 @@ interface CustomerAccountModalProps {
   onLogout: () => void;
   onOpenAdminPanel?: () => void;
   onAddPromoCode?: (code: string, percent: number, description: string) => void;
+  isAdmin: boolean;
 }
 
 export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
@@ -39,6 +40,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
   onLogout,
   onOpenAdminPanel,
   onAddPromoCode,
+  isAdmin,
 }) => {
   if (!isOpen) return null;
 
@@ -261,10 +263,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
               </button>
 
               <div className="pt-4 border-t border-[#2e1a2b] mt-auto space-y-2">
-                {(currentUser?.email?.toLowerCase().includes('mashu0734@gmail.com') ||
-                  currentUser?.email?.toLowerCase().includes('admin') ||
-                  localStorage.getItem('sba_admin_auth') === 'true') &&
-                  onOpenAdminPanel && (
+                {isAdmin && onOpenAdminPanel && (
                     <button
                       type="button"
                       onClick={() => {
@@ -336,19 +335,19 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <strong className="text-white block mb-1">✉️ ای میل:</strong>
-                          <span>{currentUser.email || 'حساب میں درج نہیں'}</span>
+                          <strong className="text-white block mb-1">{language === 'ur' ? '✉️ ای میل:' : '✉️ Email:'}</strong>
+                          <span>{currentUser.email || (language === 'ur' ? 'حساب میں درج نہیں' : 'Not Provided')}</span>
                         </div>
                         <div>
-                          <strong className="text-white block mb-1">🏙️ شہر (City):</strong>
+                          <strong className="text-white block mb-1">{language === 'ur' ? '🏙️ شہر (City):' : '🏙️ City:'}</strong>
                           <span>{currentUser.city || 'Pakistan'}</span>
                         </div>
                       </div>
 
                       <div>
-                        <strong className="text-white block mb-1">📍 محفوظ شدہ ڈلیوری ایڈریس:</strong>
+                        <strong className="text-white block mb-1">{language === 'ur' ? '📍 محفوظ شدہ ڈلیوری ایڈریس:' : '📍 Saved Delivery Address:'}</strong>
                         <p className="bg-[#080509] p-3 rounded-xl border border-[#2e1a2b]">
-                          {currentUser.address || 'کوئی ایڈریس محفوظ نہیں ہے۔ آرڈر کرتے وقت ایڈریس شامل کریں۔'}
+                          {currentUser.address || (language === 'ur' ? 'کوئی ایڈریس محفوظ نہیں ہے۔ آرڈر کرتے وقت ایڈریس شامل کریں۔' : 'No address saved. Add your address during checkout.')}
                         </p>
                       </div>
                     </div>
@@ -375,7 +374,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs font-bold text-white block mb-1">نام (Full Name) *</label>
+                          <label className="text-xs font-bold text-white block mb-1">{language === 'ur' ? 'نام (Full Name) *' : 'Full Name *'}</label>
                           <input
                             type="text"
                             required
@@ -386,7 +385,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                         </div>
 
                         <div>
-                          <label className="text-xs font-bold text-white block mb-1">فون نمبر *</label>
+                          <label className="text-xs font-bold text-white block mb-1">{language === 'ur' ? 'فون نمبر *' : 'Phone Number *'}</label>
                           <input
                             type="tel"
                             required
@@ -399,7 +398,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs font-bold text-white block mb-1">ای میل</label>
+                          <label className="text-xs font-bold text-white block mb-1">{language === 'ur' ? 'ای میل' : 'Email'}</label>
                           <input
                             type="email"
                             value={email}
@@ -409,7 +408,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                         </div>
 
                         <div>
-                          <label className="text-xs font-bold text-white block mb-1">شہر (City)</label>
+                          <label className="text-xs font-bold text-white block mb-1">{language === 'ur' ? 'شہر (City)' : 'City'}</label>
                           <input
                             type="text"
                             value={city}
@@ -420,7 +419,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                       </div>
 
                       <div>
-                        <label className="text-xs font-bold text-white block mb-1">ڈلیوری ایڈریس</label>
+                        <label className="text-xs font-bold text-white block mb-1">{language === 'ur' ? 'ڈلیوری ایڈریس' : 'Delivery Address'}</label>
                         <textarea
                           rows={2}
                           value={address}

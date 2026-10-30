@@ -74,6 +74,13 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
+  // Enforce Admin Access (Owner only)
+  const isAdmin = localStorage.getItem('sba_admin_auth') === 'true';
+  if (!isAdmin) {
+    onClose();
+    return null;
+  }
+  
   // Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
     return localStorage.getItem('sba_admin_auth') === 'true';
