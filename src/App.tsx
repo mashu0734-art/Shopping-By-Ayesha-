@@ -728,6 +728,7 @@ export default function App() {
         onLogin={handleLogin}
         onLogout={handleLogout}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
+        onAddPromoCode={handleAddPromoCode}
       />
 
       {/* Public Store Policy & Contact Info Pages Modal */}

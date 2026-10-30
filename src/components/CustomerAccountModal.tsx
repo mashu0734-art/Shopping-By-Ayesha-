@@ -26,6 +26,7 @@ interface CustomerAccountModalProps {
   onLogin: (user: UserAccount) => void;
   onLogout: () => void;
   onOpenAdminPanel?: () => void;
+  onAddPromoCode?: (code: string, percent: number, description: string) => void;
 }
 
 export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
@@ -37,6 +38,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
   onLogin,
   onLogout,
   onOpenAdminPanel,
+  onAddPromoCode,
 }) => {
   if (!isOpen) return null;
 
@@ -156,6 +158,21 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
               </p>
             </div>
 
+            <div className="flex bg-[#171017] rounded-xl p-1 mb-6 border border-[#2e1a2b]">
+              <button
+                onClick={() => setAuthMode('signup')}
+                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${authMode === 'signup' ? 'bg-[#FF168F] text-white' : 'text-zinc-400 hover:text-white'}`}
+              >
+                {language === 'ur' ? 'سائن اپ' : 'Sign Up'}
+              </button>
+              <button
+                onClick={() => setAuthMode('login')}
+                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${authMode === 'login' ? 'bg-[#FF168F] text-white' : 'text-zinc-400 hover:text-white'}`}
+              >
+                {language === 'ur' ? 'لاگ ان' : 'Log In'}
+              </button>
+            </div>
+
             <form onSubmit={handleAuthSubmit} className="space-y-4 text-left">
               <div>
                 <label className="text-xs font-bold text-zinc-300 block mb-1">
@@ -189,7 +206,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                 type="submit"
                 className="w-full btn-neon-pink py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(255,22,143,0.5)]"
               >
-                {language === 'ur' ? 'اکاؤنٹ میں داخل ہوں (Continue)' : 'Continue to My Account'}
+                {authMode === 'signup' ? (language === 'ur' ? 'اکاؤنٹ بنائیں' : 'Create Account') : (language === 'ur' ? 'لاگ ان کریں' : 'Log In')}
               </button>
             </form>
           </div>
@@ -288,14 +305,14 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
                     <h3 className="font-serif text-lg font-bold text-white">
-                      پروفائل و ڈلیوری ایڈریس (Customer Details)
+                      {language === 'ur' ? 'پروفائل و ڈلیوری ایڈریس' : 'Profile & Delivery Address'}
                     </h3>
                     <button
                       type="button"
                       onClick={() => setIsEditing(!isEditing)}
                       className="px-3 py-1.5 rounded-lg bg-[#171017] border border-[#FF168F]/50 text-xs font-bold text-[#FF8BC8] hover:text-white"
                     >
-                      {isEditing ? 'کینسل' : 'ایڈٹ کریں (Edit)'}
+                      {language === 'ur' ? (isEditing ? 'کینسل' : 'ایڈٹ کریں') : (isEditing ? 'Cancel' : 'Edit')}
                     </button>
                   </div>
 
@@ -351,7 +368,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                         </div>
                         <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#2e1a2b] hover:bg-[#FF168F] text-xs font-bold text-white transition-colors flex items-center gap-1.5">
                           <Camera className="w-3.5 h-3.5" />
-                          <span>تصویر تبدیل کریں</span>
+                          <span>{language === 'ur' ? 'تصویر تبدیل کریں' : 'Change Photo'}</span>
                           <input type="file" accept="image/*" className="hidden" onChange={handleAvatarFile} />
                         </label>
                       </div>
@@ -416,7 +433,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                         type="submit"
                         className="w-full btn-neon-pink py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider"
                       >
-                        محفوظ کریں (Save Profile)
+                        {language === 'ur' ? 'محفوظ کریں' : 'Save Profile'}
                       </button>
                     </form>
                   )}
@@ -427,13 +444,13 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
               {activeTab === 'orders' && (
                 <div className="space-y-4">
                   <h3 className="font-serif text-lg font-bold text-white">
-                    میرے پچھلے اور موجودہ آرڈرز ({myOrders.length})
+                    {language === 'ur' ? 'میرے پچھلے اور موجودہ آرڈرز' : 'My Orders'} ({myOrders.length})
                   </h3>
 
                   {myOrders.length === 0 ? (
                     <div className="text-center py-12 text-xs text-zinc-400 bg-[#171017] rounded-2xl border border-[#2e1a2b] space-y-2">
                       <ShoppingBag className="w-8 h-8 text-zinc-600 mx-auto" />
-                      <p>آپ نے ابھی تک کوئی آرڈر نہیں کیا!</p>
+                      <p>{language === 'ur' ? 'آپ نے ابھی تک کوئی آرڈر نہیں کیا!' : 'You haven\'t placed any orders yet!'}</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -460,11 +477,11 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
                               }`}
                             >
                               {ord.status === 'Confirmed'
-                                ? '✓ آرڈر کنفرم ہو گیا ہے'
+                                ? (language === 'ur' ? '✓ آرڈر کنفرم ہو گیا ہے' : '✓ Order Confirmed')
                                 : ord.status === 'Dispatched'
-                                ? '🚚 آرڈر روانہ کر دیا گیا ہے'
+                                ? (language === 'ur' ? '🚚 آرڈر روانہ کر دیا گیا ہے' : '🚚 Order Dispatched')
                                 : ord.status === 'Delivered'
-                                ? '🎉 آرڈر ڈیلیور ہو چکا ہے'
+                                ? (language === 'ur' ? '🎉 آرڈر ڈیلیور ہو چکا ہے' : '🎉 Order Delivered')
                                 : ord.status}
                             </span>
                           </div>
@@ -502,27 +519,44 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
               {activeTab === 'discounts' && (
                 <div className="space-y-4">
                   <h3 className="font-serif text-lg font-bold text-white">
-                    آپ کے لیے خصوصی 10% ڈسکاؤنٹ افر
+                    {language === 'ur' ? 'آپ کے لیے خصوصی 10% ڈسکاؤنٹ افر' : 'Exclusive 10% Discount Offer for You'}
                   </h3>
 
                   <div className="p-5 rounded-2xl bg-gradient-to-tr from-[#171017] to-[#251525] border border-[#FF168F] space-y-3">
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-[#FF168F]" />
-                      <span className="font-bold text-white text-sm">ریفرل پرومو کوڈ (Special Referral Discount):</span>
+                      <span className="font-bold text-white text-sm">
+                        {language === 'ur' ? 'ریفرل پرومو کوڈ (Referral Code):' : 'Referral Promo Code:'}
+                      </span>
                     </div>
 
                     <div className="p-4 rounded-xl bg-[#080509] border border-[#FF168F] flex items-center justify-between">
                       <div>
                         <span className="font-mono text-lg font-extrabold text-[#FF168F] block">REF10</span>
-                        <span className="text-xs text-zinc-300">10٪ رعایت ہر آرڈر پر حاصل کریں</span>
+                        <span className="text-xs text-zinc-300">{language === 'ur' ? '10٪ رعایت ہر آرڈر پر حاصل کریں' : 'Get 10% discount on every order'}</span>
                       </div>
                       <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[#FF168F] text-white shadow-[0_0_10px_#FF168F]">
                         10% OFF
                       </span>
                     </div>
 
+                    {onAddPromoCode && (
+                      <button
+                        onClick={() => {
+                          const code = `${currentUser!.fullName.split(' ')[0].toUpperCase()}${Math.floor(100 + Math.random() * 900)}`;
+                          onAddPromoCode(code, 10, 'Personal Referral Discount');
+                          alert(`New Promo Code Generated: ${code}. Share this with your friends!`);
+                        }}
+                        className="w-full py-2.5 rounded-xl bg-[#FF168F] text-white text-xs font-bold uppercase tracking-wider"
+                      >
+                        {language === 'ur' ? 'اپنا پرومو کوڈ بنائیں' : 'Generate My Referral Code'}
+                      </button>
+                    )}
+
                     <p className="text-xs text-zinc-400 leading-relaxed">
-                      آرڈر کرتے وقت چیک آؤٹ پر پرومو کوڈ <strong className="text-white font-mono">REF10</strong> درج کریں اور فوری 10٪ ڈسکاؤنٹ پائیں۔
+                      {language === 'ur'
+                        ? 'آرڈر کرتے وقت چیک آؤٹ پر اپنا کوڈ درج کریں اور فوری 10٪ ڈسکاؤنٹ پائیں۔'
+                        : 'Use your generated code at checkout to get 10% discount.'}
                     </p>
                   </div>
                 </div>
