@@ -105,7 +105,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         discount: calculatedDiscount,
         shipping,
         total: grandTotal,
-        paymentMethod: 'Cash on Delivery (کیش آن ڈیلیوری)',
+        paymentMethod: language === 'ur' ? 'کیش آن ڈیلیوری (Cash on Delivery)' : 'Cash on Delivery',
         status: 'Confirmed',
         currency,
       };

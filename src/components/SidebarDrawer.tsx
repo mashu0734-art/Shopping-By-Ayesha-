@@ -148,10 +148,10 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   <span className="text-base">👗</span>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">
-                      {language === 'ur' ? 'ملبوسات و ڈریسز (Dresses)' : 'Couture Dresses'}
+                      {language === 'ur' ? 'ملبوسات و ڈریسز' : 'Couture Dresses'}
                     </div>
                     <div className="text-[10px] text-zinc-400">
-                      {language === 'ur' ? 'ونٹر · سمر · فینسی' : 'Winter · Summer · Fancy'}
+                      {language === 'ur' ? 'موسمِ سرما · موسمِ گرما · فینسی' : 'Winter · Summer · Fancy'}
                     </div>
                   </div>
                 </div>
@@ -164,7 +164,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                     onClick={() => handleSelect('Dresses', 'All')}
                     className="w-full text-left py-1.5 px-3 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-[#171017] transition-colors flex items-center justify-between"
                   >
-                    <span>{language === 'ur' ? 'تمام ڈریسز (All Dresses)' : 'All Dresses'}</span>
+                    <span>{language === 'ur' ? 'تمام ڈریسز' : 'All Dresses'}</span>
                     <span className="text-[10px] text-[#FF8BC8]">{language === 'ur' ? 'سب دیکھیں' : 'View All'}</span>
                   </button>
 
@@ -178,7 +178,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'ونٹر کلیکشن (سردیوں کے سوٹ)' : 'Winter Collection (ونٹر)'}</span>
+                      <span>{language === 'ur' ? 'موسمِ سرما (سردیوں کے سوٹ)' : 'Winter Collection'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Velvet & Shawls</span>
                   </button>
@@ -193,7 +193,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'سمر کلیکشن (گرمیوں کے لان/شفون)' : 'Summer Collection (سمر)'}</span>
+                      <span>{language === 'ur' ? 'موسمِ گرما (گرمیوں کا کلیکشن)' : 'Summer Collection'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Lawn & Chiffon</span>
                   </button>
@@ -208,7 +208,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'فینسی پارٹی ویئر (شادی و ایونٹس)' : 'Fancy & Party Wear (فینسی)'}</span>
+                      <span>{language === 'ur' ? 'فینسی و عروسی ملبوسات' : 'Fancy & Party Wear'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Sequins & Silk</span>
                   </button>
@@ -226,10 +226,10 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   <span className="text-base">💎</span>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">
-                      {language === 'ur' ? 'شاہی زیورات (Jewellery)' : 'Royal Jewellery'}
+                      {language === 'ur' ? 'شاہی زیورات' : 'Royal Jewellery'}
                     </div>
                     <div className="text-[10px] text-zinc-400">
-                      {language === 'ur' ? 'جھمکے · ہار · بالیاں · انگوٹھی · سیٹ' : 'Jhumkay · Necklace · Earrings · Rings'}
+                      {language === 'ur' ? 'جھمکے · ہار · بالیاں · انگوٹھی · برائیڈل سیٹ' : 'Jhumkay · Necklace · Earrings · Rings'}
                     </div>
                   </div>
                 </div>
@@ -242,7 +242,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                     onClick={() => handleSelect('Jewellery', 'All')}
                     className="w-full text-left py-1.5 px-3 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-[#171017] transition-colors flex items-center justify-between"
                   >
-                    <span>{language === 'ur' ? 'تمام جیولری (All Jewellery)' : 'All Jewellery'}</span>
+                    <span>{language === 'ur' ? 'تمام زیورات' : 'All Jewellery'}</span>
                     <span className="text-[10px] text-[#FF8BC8]">{language === 'ur' ? 'سب دیکھیں' : 'View All'}</span>
                   </button>
 
@@ -256,7 +256,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'جھمکے (Jhumkay)' : 'Jhumkay (جھمکے)'}</span>
+                      <span>{language === 'ur' ? 'شاہی جھمکے' : 'Jhumkay'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Kundan & Pearl</span>
                   </button>
@@ -271,7 +271,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'ہار اور چوکر (Necklace & Chokers)' : 'Necklace & Chokers (ہار)'}</span>
+                      <span>{language === 'ur' ? 'ہار اور چوکر' : 'Necklace & Chokers'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Chokers & Sets</span>
                   </button>
@@ -286,7 +286,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'بالیاں و ٹاپس (Earrings & Tops)' : 'Earrings & Tops (بالیاں)'}</span>
+                      <span>{language === 'ur' ? 'بالیاں و ٹاپس' : 'Earrings & Tops'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Drops & Hoops</span>
                   </button>
@@ -301,7 +301,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'انگوٹھیاں (Rings)' : 'Rings (انگوٹھیاں)'}</span>
+                      <span>{language === 'ur' ? 'انگوٹھیاں' : 'Rings'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Solitaire & Crown</span>
                   </button>
@@ -316,7 +316,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'مکمل برائیڈل سیٹ (Complete Bridal Set)' : 'Complete Bridal Set (مکمل سیٹ)'}</span>
+                      <span>{language === 'ur' ? 'مکمل برائیڈل سیٹ' : 'Complete Bridal Set'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Necklace, Earrings, Tikka</span>
                   </button>
@@ -331,7 +331,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'کنگن اور چوڑیاں (Bracelets & Bangles)' : 'Bracelets & Bangles (کنگن)'}</span>
+                      <span>{language === 'ur' ? 'کنگن اور چوڑیاں' : 'Bracelets & Bangles'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Cuffs & Bangles</span>
                   </button>
@@ -349,7 +349,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   <span className="text-base">👜</span>
                   <div>
                     <div className="text-xs font-bold text-white uppercase tracking-wider">
-                      {language === 'ur' ? 'ڈیزائنر بیگز (Bags)' : 'Designer Bags'}
+                      {language === 'ur' ? 'ڈیزائنر بیگز' : 'Designer Bags'}
                     </div>
                     <div className="text-[10px] text-zinc-400">
                       {language === 'ur' ? 'کلچز · ہینڈ بیگز · پارٹی بیگز' : 'Clutches · Handbags · Party Bags'}
@@ -365,7 +365,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                     onClick={() => handleSelect('Bags', 'All')}
                     className="w-full text-left py-1.5 px-3 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-[#171017] transition-colors flex items-center justify-between"
                   >
-                    <span>{language === 'ur' ? 'تمام بیگز (All Bags)' : 'All Bags'}</span>
+                    <span>{language === 'ur' ? 'تمام بیگز' : 'All Bags'}</span>
                     <span className="text-[10px] text-[#FF8BC8]">{language === 'ur' ? 'سب دیکھیں' : 'View All'}</span>
                   </button>
 
@@ -379,7 +379,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'کلچز (Clutches)' : 'Clutches (کلچز)'}</span>
+                      <span>{language === 'ur' ? 'فینسی کلچز' : 'Clutches'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Satin & Box</span>
                   </button>
@@ -394,7 +394,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'ہینڈ بیگز (Handbags)' : 'Handbags (ہینڈ بیگز)'}</span>
+                      <span>{language === 'ur' ? 'لیڈیز ہینڈ بیگز' : 'Handbags'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Caviar & Flap</span>
                   </button>
@@ -409,7 +409,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                   >
                     <span className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF8BC8]" />
-                      <span>{language === 'ur' ? 'پارٹی و برائیڈل بیگز' : 'Party & Bridal Bags (پارٹی بیگز)'}</span>
+                      <span>{language === 'ur' ? 'پارٹی و برائیڈل بیگز' : 'Party & Bridal Bags'}</span>
                     </span>
                     <span className="text-[10px] text-zinc-500">Croc & Crystal</span>
                   </button>

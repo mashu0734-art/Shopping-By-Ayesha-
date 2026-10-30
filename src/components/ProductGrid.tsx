@@ -43,40 +43,40 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     if (cat === 'Dresses') {
       return [
         { label: language === 'ur' ? 'تمام ڈریسز' : 'All Dresses', value: 'All' },
-        { label: language === 'ur' ? '❄️ ونٹر (Winter)' : '❄️ Winter Dresses', value: 'Winter' },
-        { label: language === 'ur' ? '☀️ سمر (Summer)' : '☀️ Summer Dresses', value: 'Summer' },
-        { label: language === 'ur' ? '✨ فینسی پارٹی ویئر' : '✨ Fancy Party Wear', value: 'Fancy' },
+        { label: language === 'ur' ? '❄️ موسمِ سرما' : '❄️ Winter Dresses', value: 'Winter' },
+        { label: language === 'ur' ? '☀️ موسمِ گرما' : '☀️ Summer Dresses', value: 'Summer' },
+        { label: language === 'ur' ? '✨ فینسی و عروسی' : '✨ Fancy Wear', value: 'Fancy' },
       ];
     }
     if (cat === 'Jewellery') {
       return [
-        { label: language === 'ur' ? 'تمام جیولری' : 'All Jewellery', value: 'All' },
-        { label: language === 'ur' ? '✨ جھمکے (Jhumkay)' : '✨ Jhumkay', value: 'Jhumkey' },
-        { label: language === 'ur' ? '💎 ہار و چوکر (Necklace)' : '💎 Necklace & Chokers', value: 'Necklace' },
-        { label: language === 'ur' ? '🌟 بالیاں (Earrings)' : '🌟 Earrings', value: 'Earrings' },
-        { label: language === 'ur' ? '💍 انگوٹھیاں (Rings)' : '💍 Rings', value: 'Ring' },
-        { label: language === 'ur' ? '👑 مکمل سیٹ (Complete Set)' : '👑 Complete Sets', value: 'Complete Set' },
-        { label: language === 'ur' ? '💫 کنگن و چوڑیاں' : '💫 Bracelets', value: 'Bracelets' },
+        { label: language === 'ur' ? 'تمام زیورات' : 'All Jewellery', value: 'All' },
+        { label: language === 'ur' ? '✨ شاہی جھمکے' : '✨ Jhumkay', value: 'Jhumkey' },
+        { label: language === 'ur' ? '💎 ہار و چوکر' : '💎 Necklaces', value: 'Necklace' },
+        { label: language === 'ur' ? '🌟 بالیاں و ٹاپس' : '🌟 Earrings', value: 'Earrings' },
+        { label: language === 'ur' ? '💍 انگوٹھیاں' : '💍 Rings', value: 'Ring' },
+        { label: language === 'ur' ? '👑 برائیڈل سیٹ' : '👑 Complete Sets', value: 'Complete Set' },
+        { label: language === 'ur' ? '💫 کنگن و چوڑیاں' : '💫 Bracelets & Bangles', value: 'Bracelets' },
       ];
     }
     if (cat === 'Bags') {
       return [
         { label: language === 'ur' ? 'تمام بیگز' : 'All Bags', value: 'All' },
-        { label: language === 'ur' ? '👛 کلچز (Clutches)' : '👛 Clutches', value: 'Clutches' },
-        { label: language === 'ur' ? '👜 ہینڈ بیگز (Handbags)' : '👜 Handbags', value: 'Handbags' },
-        { label: language === 'ur' ? '✨ پارٹی بیگز (Party Bags)' : '✨ Party Bags', value: 'Party Bags' },
+        { label: language === 'ur' ? '👛 فینسی کلچز' : '👛 Clutches', value: 'Clutches' },
+        { label: language === 'ur' ? '👜 لیڈیز ہینڈ بیگز' : '👜 Handbags', value: 'Handbags' },
+        { label: language === 'ur' ? '✨ پارٹی بیگز' : '✨ Party Bags', value: 'Party Bags' },
       ];
     }
     // When All is selected, show most popular quick type pills
     return [
-      { label: language === 'ur' ? 'سب ورائٹی' : 'All Types', value: 'All' },
-      { label: language === 'ur' ? '❄️ ونٹر ڈریسز' : '❄️ Winter', value: 'Winter' },
-      { label: language === 'ur' ? '☀️ سمر ڈریسز' : '☀️ Summer', value: 'Summer' },
-      { label: language === 'ur' ? '✨ فینسی ڈریسز' : '✨ Fancy', value: 'Fancy' },
+      { label: language === 'ur' ? 'تمام ورائٹی' : 'All Types', value: 'All' },
+      { label: language === 'ur' ? '❄️ موسمِ سرما' : '❄️ Winter', value: 'Winter' },
+      { label: language === 'ur' ? '☀️ موسمِ گرما' : '☀️ Summer', value: 'Summer' },
+      { label: language === 'ur' ? '✨ فینسی' : '✨ Fancy', value: 'Fancy' },
       { label: language === 'ur' ? '✨ جھمکے' : '✨ Jhumkay', value: 'Jhumkey' },
       { label: language === 'ur' ? '💎 ہار' : '💎 Necklace', value: 'Necklace' },
-      { label: language === 'ur' ? '💍 انگوٹھی' : '💍 Rings', value: 'Ring' },
-      { label: language === 'ur' ? '👑 مکمل سیٹ' : '👑 Complete Set', value: 'Complete Set' },
+      { label: language === 'ur' ? '💍 انگوٹھیاں' : '💍 Rings', value: 'Ring' },
+      { label: language === 'ur' ? '👑 برائیڈل سیٹ' : '👑 Complete Set', value: 'Complete Set' },
       { label: language === 'ur' ? '👛 کلچز' : '👛 Clutches', value: 'Clutches' },
       { label: language === 'ur' ? '👜 ہینڈ بیگز' : '👜 Handbags', value: 'Handbags' },
     ];

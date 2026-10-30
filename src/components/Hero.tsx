@@ -88,13 +88,13 @@ export const Hero: React.FC<HeroProps> = ({
               </span>
             </div>
             <h3 className="font-serif text-base font-bold text-white">
-              {language === 'ur' ? 'لیڈیز ڈریسز (Dresses)' : 'Couture Dresses'}
+              {language === 'ur' ? 'ملبوسات و ڈریسز' : 'Couture Dresses'}
             </h3>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {[
-                { name: language === 'ur' ? '❄️ ونٹر (Winter)' : '❄️ Winter', sub: 'Winter' },
-                { name: language === 'ur' ? '☀️ سمر (Summer)' : '☀️ Summer', sub: 'Summer' },
-                { name: language === 'ur' ? '✨ فینسی (Fancy)' : '✨ Fancy', sub: 'Fancy' },
+                { name: language === 'ur' ? '❄️ موسمِ سرما' : '❄️ Winter Collection', sub: 'Winter' },
+                { name: language === 'ur' ? '☀️ موسمِ گرما' : '☀️ Summer Collection', sub: 'Summer' },
+                { name: language === 'ur' ? '✨ فینسی و عروسی' : '✨ Fancy Wear', sub: 'Fancy' },
               ].map((s) => (
                 <button
                   key={s.sub}
@@ -116,15 +116,15 @@ export const Hero: React.FC<HeroProps> = ({
               </span>
             </div>
             <h3 className="font-serif text-base font-bold text-white">
-              {language === 'ur' ? 'شاہی جیولری (Jewellery)' : 'Royal Jewellery'}
+              {language === 'ur' ? 'شاہی زیورات' : 'Royal Jewellery'}
             </h3>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {[
-                { name: language === 'ur' ? '✨ جھمکے (Jhumkay)' : '✨ Jhumkay', sub: 'Jhumkey' },
-                { name: language === 'ur' ? '💎 ہار (Necklace)' : '💎 Necklace', sub: 'Necklace' },
-                { name: language === 'ur' ? '🌟 بالیاں (Earrings)' : '🌟 Earrings', sub: 'Earrings' },
-                { name: language === 'ur' ? '💍 انگوٹھیاں (Rings)' : '💍 Rings', sub: 'Ring' },
-                { name: language === 'ur' ? '👑 مکمل سیٹ' : '👑 Complete Set', sub: 'Complete Set' },
+                { name: language === 'ur' ? '✨ شاہی جھمکے' : '✨ Jhumkay', sub: 'Jhumkey' },
+                { name: language === 'ur' ? '💎 ہار و چوکر' : '💎 Necklaces', sub: 'Necklace' },
+                { name: language === 'ur' ? '🌟 بالیاں و ایئر رنگز' : '🌟 Earrings', sub: 'Earrings' },
+                { name: language === 'ur' ? '💍 انگوٹھیاں' : '💍 Rings', sub: 'Ring' },
+                { name: language === 'ur' ? '👑 برائیڈل سیٹ' : '👑 Complete Set', sub: 'Complete Set' },
               ].map((s) => (
                 <button
                   key={s.sub}
@@ -146,11 +146,11 @@ export const Hero: React.FC<HeroProps> = ({
               </span>
             </div>
             <h3 className="font-serif text-base font-bold text-white">
-              {language === 'ur' ? 'ڈیزائنر بیگز (Bags)' : 'Designer Bags'}
+              {language === 'ur' ? 'ڈیزائنر بیگز' : 'Designer Bags'}
             </h3>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {[
-                { name: language === 'ur' ? '👛 کلچز (Clutches)' : '👛 Clutches', sub: 'Clutches' },
+                { name: language === 'ur' ? '👛 فینسی کلچز' : '👛 Clutches', sub: 'Clutches' },
                 { name: language === 'ur' ? '👜 ہینڈ بیگز' : '👜 Handbags', sub: 'Handbags' },
                 { name: language === 'ur' ? '✨ پارٹی بیگز' : '✨ Party Bags', sub: 'Party Bags' },
               ].map((s) => (
