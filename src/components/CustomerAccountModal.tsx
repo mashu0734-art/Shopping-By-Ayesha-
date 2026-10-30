@@ -33,7 +33,7 @@ export const CustomerAccountModal: React.FC<CustomerAccountModalProps> = ({
   onClose,
   currentUser,
   orders,
-  language = 'ur',
+  language = 'en',
   onLogin,
   onLogout,
   onOpenAdminPanel,

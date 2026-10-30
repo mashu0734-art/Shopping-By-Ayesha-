@@ -9,7 +9,7 @@ interface InfoPagesModalProps {
   language?: Language;
 }
 
-export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, language = 'ur' }) => {
+export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, language = 'en' }) => {
   if (!page) return null;
 
   const renderContent = () => {
@@ -24,21 +24,27 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
               <div>
                 <h3 className="font-serif text-lg font-bold text-white neon-text-glow">{BRAND.name}</h3>
                 <span className="text-[10px] text-[#FF8BC8] uppercase tracking-wider font-semibold">
-                  Luxury Handcrafted Dresses · Fine Jewellery · Designer Bags
+                  {language === 'ur'
+                    ? 'ہاتھ سے تیار کردہ ملبوسات · شاہی زیورات · ڈیزائنر بیگز'
+                    : 'Luxury Handcrafted Dresses · Fine Jewellery · Designer Bags'}
                 </span>
               </div>
             </div>
 
             <p>
-              شاپنگ بائے عائشہ (Shopping By Ayesha) پاکستان کا ایک اعلیٰ معیار اور انوکھا فیشن برانڈ ہے جو خواتین کے لیے ہاتھ کی نفیس کڑھائی والے سوٹس (ونٹر، سمر اور فینسی ڈریسز)، ہاتھ سے بنے ہوئے شاندار جیولری اور امپورٹڈ فینسی ہینڈ بیگز فراہم کرتا ہے۔
+              {language === 'ur'
+                ? 'شاپنگ بائے عائشہ پاکستان کا ایک اعلیٰ معیار فیشن برانڈ ہے جو خواتین کے لیے کڑھائی والے سوٹس، شاہی جیولری اور امپورٹڈ فینسی بیگز فراہم کرتا ہے۔'
+                : 'Shopping By Ayesha is a premier Pakistani fashion brand delivering handcrafted embroidered dresses, royal jewellery, and imported luxury bags.'}
             </p>
 
             <p>
-              ہماری تمام پروڈکٹس 100٪ کوالٹی گارنٹی اور 100٪ کیش آن ڈیلیوری (Cash On Delivery) پر پاکستان بھر میں دستیاب ہیں۔ ہمارا مقصد ہر خاتون کو جدید اور باوقار انداز فراہم کرنا ہے۔
+              {language === 'ur'
+                ? 'ہماری تمام پروڈکٹس 100٪ کوالٹی گارنٹی اور 100٪ کیش آن ڈیلیوری پر پاکستان بھر میں دستیاب ہیں۔'
+                : 'All our creations come with a 100% quality guarantee and are delivered nationwide via 100% Cash on Delivery.'}
             </p>
 
             <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-300 font-bold">
-              ✓ 100% کیش آن ڈیلیوری | کوئی ایڈوانس پیمنٹ نہیں!
+              ✓ {language === 'ur' ? '100% کیش آن ڈیلیوری | کوئی ایڈوانس پیمنٹ نہیں!' : '100% Cash On Delivery | Zero Advance Payment Needed!'}
             </div>
           </div>
         );
@@ -47,7 +53,9 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
         return (
           <div className="space-y-4 text-xs text-zinc-300">
             <p className="text-zinc-400">
-              کسی بھی قسم کے سوالات، آرڈر کی معلومات یا ہیلپ کے لیے ہم سے رابطہ کریں:
+              {language === 'ur'
+                ? 'کسی بھی سوال، آرڈر کی معلومات یا ہیلپ کے لیے ہم سے رابطہ کریں:'
+                : 'For any questions, order updates, or assistance, contact us:'}
             </p>
 
             <a
@@ -60,9 +68,11 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
                 <MessageCircle className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] text-emerald-400 font-bold uppercase block">فوری آرڈر و واٹس ایپ ہیلپ:</span>
-                <span className="font-mono text-sm font-extrabold text-white group-hover:text-emerald-300">
-                  {BRAND.contact.whatsappFormatted}
+                <span className="text-[10px] text-emerald-400 font-bold uppercase block">
+                  {language === 'ur' ? 'فوری آرڈر و واٹس ایپ ہیلپ' : 'WhatsApp Support & Order'}
+                </span>
+                <span className="text-xs font-extrabold text-white group-hover:text-emerald-300">
+                  {language === 'ur' ? 'برائے راست چیٹ کریں' : 'Click to Chat on WhatsApp'}
                 </span>
               </div>
             </a>
@@ -75,7 +85,9 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
                 <Mail className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] text-zinc-500 font-bold uppercase block">ای میل / Gmail Support:</span>
+                <span className="text-[10px] text-zinc-500 font-bold uppercase block">
+                  {language === 'ur' ? 'ای میل سپورٹ:' : 'Email Support:'}
+                </span>
                 <span className="font-mono text-xs font-bold text-white group-hover:text-[#FF168F]">
                   {BRAND.contact.email}
                 </span>
@@ -87,13 +99,17 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
       case 'returns':
         return (
           <div className="space-y-3 text-xs text-zinc-300 leading-relaxed">
-            <h4 className="font-bold text-white text-sm">🔄 7 روز کی ریٹرن اور ایکسچینج پالیسی:</h4>
+            <h4 className="font-bold text-white text-sm">
+              🔄 {language === 'ur' ? '7 روز کی ریٹرن اور ایکسچینج پالیسی:' : '7-Day Easy Return & Exchange Policy:'}
+            </h4>
             <p>
-              اگر آپ کو موصول ہونے والا سوٹ، جیولری یا بیگ کسی بھی قسم کے نقصان (Damage) یا غلط رنگ کا نکلے تو آپ 7 دنوں کے اندر اندر اسے باآسانی تبدیل (Exchange) یا ریٹرن کروا سکتے ہیں۔
+              {language === 'ur'
+                ? 'اگر موصول ہونے والے پارسل میں کوئی مسئلہ یا خرابی ہو تو آپ 7 دنوں کے اندر باآسانی تبدیل یا ریٹرن کروا سکتے ہیں۔'
+                : 'If your parcel arrives with any damage or defect, you can exchange or return it within 7 days.'}
             </p>
             <ul className="list-disc pl-4 space-y-1 text-zinc-400">
-              <li>پروڈکٹ کا غیر استعمال شدہ اور اصل پیکنگ میں ہونا ضروری ہے۔</li>
-              <li>تبدیلی کے لیے واٹس ایپ نمبر {BRAND.contact.whatsappFormatted} پر تصویر بھیجیں۔</li>
+              <li>{language === 'ur' ? 'پروڈکٹ کا غیر استعمال شدہ اور اصل پیکنگ میں ہونا ضروری ہے۔' : 'The item must be unused and in original packaging.'}</li>
+              <li>{language === 'ur' ? 'تبدیلی کے لیے ہمارے واٹس ایپ بٹن پر رابطہ کریں۔' : 'For returns, simply contact us via WhatsApp Support.'}</li>
             </ul>
           </div>
         );
@@ -101,9 +117,13 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
       case 'privacy':
         return (
           <div className="space-y-3 text-xs text-zinc-300 leading-relaxed">
-            <h4 className="font-bold text-white text-sm">🔒 پرائیویسی اور سیکیورٹی پالیسی:</h4>
+            <h4 className="font-bold text-white text-sm">
+              🔒 {language === 'ur' ? 'پرائیویسی اور سیکیورٹی پالیسی:' : 'Privacy & Data Protection Policy:'}
+            </h4>
             <p>
-              شاپنگ بائے عائشہ آپ کے تمام ذاتی و ڈلیوری کوائف (نام، فون نمبر، پتہ) کو مکمل طور پر محفوظ رکھتی ہے۔ ہم آپ کی معلومات کسی بھی تیسرے فریق کو فروخت یا شیئر نہیں کرتے۔
+              {language === 'ur'
+                ? 'شاپنگ بائے عائشہ آپ کے تمام ذاتی و ڈلیوری کوائف (نام، فون نمبر، پتہ) کو مکمل طور پر محفوظ رکھتی ہے۔'
+                : 'Shopping By Ayesha securely protects all customer information (name, phone, delivery address).'}
             </p>
           </div>
         );
@@ -111,12 +131,18 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
       case 'terms':
         return (
           <div className="space-y-3 text-xs text-zinc-300 leading-relaxed">
-            <h4 className="font-bold text-white text-sm">📜 شرائط و ضوابط (Terms & Conditions):</h4>
+            <h4 className="font-bold text-white text-sm">
+              📜 {language === 'ur' ? 'شرائط و ضوابط:' : 'Terms & Conditions:'}
+            </h4>
             <p>
-              1. تمام آرڈرز صرف کیش آن ڈیلیوری پر بھیجے جاتے ہیں۔ پارسل کھول کر چیک کرنے کی سہولت ڈلیوری رائڈر کے قوانین کے مطابق دی جاتی ہے۔
+              {language === 'ur'
+                ? '1. تمام آرڈرز صرف کیش آن ڈیلیوری پر بھیجے جاتے ہیں۔'
+                : '1. All orders are strictly dispatched on Cash on Delivery.'}
             </p>
             <p>
-              2. ایک ہی پروڈکٹ کی ملٹیپل کوانٹٹی پر صرف ایک بار Rs. 300 ڈلیوری چارج لاگو ہوگا جبکہ مختلف پروڈکٹس پر الگ ڈلیوری چارجز شامل ہوں گے۔
+              {language === 'ur'
+                ? '2. ایک ہی پروڈکٹ کی ملٹیپل کوانٹٹی پر صرف ایک بار Rs. 300 ڈلیوری چارج لاگو ہوگا۔'
+                : '2. Delivery fee of Rs. 300 is charged once per distinct product.'}
             </p>
           </div>
         );
@@ -127,11 +153,11 @@ export const InfoPagesModal: React.FC<InfoPagesModalProps> = ({ page, onClose, l
   };
 
   const titles = {
-    about: 'ہمارے بارے میں (About Us)',
-    contact: 'ہم سے رابطہ کریں (Contact Us)',
-    returns: 'ریٹرن و ایکسچینج پالیسی (Return Policy)',
-    privacy: 'پرائیویسی پالیسی (Privacy Policy)',
-    terms: 'شرائط و ضوابط (Terms & Conditions)',
+    about: language === 'ur' ? 'ہمارے بارے میں' : 'About Us',
+    contact: language === 'ur' ? 'ہم سے رابطہ کریں' : 'Contact Us',
+    returns: language === 'ur' ? 'ریٹرن و ایکسچینج پالیسی' : 'Return & Exchange Policy',
+    privacy: language === 'ur' ? 'پرائیویسی پالیسی' : 'Privacy Policy',
+    terms: language === 'ur' ? 'شرائط و ضوابط' : 'Terms & Conditions',
   };
 
   return (

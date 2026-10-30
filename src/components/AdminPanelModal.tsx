@@ -59,7 +59,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   onClose,
   products,
   orders,
-  language = 'ur',
+  language = 'en',
   announcementText,
   deliveryFee,
   promoCodes,
@@ -95,8 +95,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   const [prodDescription, setProdDescription] = useState('');
   const [prodImages, setProdImages] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<{ name: string; hex: string; image?: string }[]>([
-    { name: 'Maroon (میرون)', hex: '#800020' },
-    { name: 'Shocking Pink / Rani (رانی پنک / شوخ گلابی)', hex: '#FF168F' },
+    { name: language === 'ur' ? 'میرون' : 'Maroon', hex: '#800020' },
+    { name: language === 'ur' ? 'رانی پنک' : 'Shocking Pink', hex: '#FF168F' },
   ]);
   const [colorSearch, setColorSearch] = useState('');
   const [colorGroupFilter, setColorGroupFilter] = useState<string>('all');
@@ -133,7 +133,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
       setIsAdminAuthenticated(true);
       localStorage.setItem('sba_admin_auth', 'true');
     } else {
-      setAuthError(language === 'ur' ? 'غلط ای میل یا پاس ورڈ! (کوشش کریں: mashu0734@gmail.com / admin123)' : 'Invalid Admin Credentials! (Try: mashu0734@gmail.com / admin123)');
+      setAuthError(language === 'ur' ? 'غلط ای میل یا پاس ورڈ!' : 'Invalid Admin Credentials!');
     }
   };
 
@@ -327,13 +327,13 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
             </div>
             <div>
               <h2 className="font-serif text-lg sm:text-xl font-bold text-white tracking-wide flex items-center gap-2">
-                <span>{language === 'ur' ? 'آن لائن اسٹور ایڈمن پینل (Private Dashboard)' : 'Owner Admin Dashboard'}</span>
+                <span>{language === 'ur' ? 'ایڈمن کنٹرول ڈیش بورڈ' : 'Admin Control Dashboard'}</span>
                 <span className="px-2 py-0.5 rounded text-[10px] bg-[#FF168F] text-white font-bold uppercase tracking-wider">
                   PRIVATE
                 </span>
               </h2>
               <p className="text-[11px] text-[#FF8BC8]">
-                Shopping By Ayesha · Full Business Control & Analytics
+                Shopping By Ayesha · Business Operations
               </p>
             </div>
           </div>
@@ -368,11 +368,11 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
 
             <div>
               <h3 className="font-serif text-xl font-bold text-white">
-                {language === 'ur' ? 'ایڈمن سکیور لاگ ان (Owner Portal)' : 'Owner Admin Access'}
+                {language === 'ur' ? 'ایڈمن لاگ ان' : 'Owner Admin Access'}
               </h3>
               <p className="text-xs text-zinc-400 mt-1">
                 {language === 'ur'
-                  ? 'صرف ویب سائٹ اونر کے لیے سکیور لاگ ان۔ لاگ ان کے بعد ڈیش بورڈ، آرڈرز اور پراڈکٹس کنٹرول کریں۔'
+                  ? 'ویب سائٹ اونر کے لیے سکیور لاگ ان۔ ڈیش بورڈ، آرڈرز اور پراڈکٹس کنٹرول کریں۔'
                   : 'Enter owner credentials to manage products, customer orders, and store settings.'}
               </p>
             </div>
@@ -386,7 +386,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
             <form onSubmit={handleAdminLogin} className="w-full space-y-4 text-left">
               <div>
                 <label className="text-xs font-bold text-zinc-300 block mb-1">
-                  {language === 'ur' ? 'ایڈمن ای میل (Admin Email):' : 'Admin Email:'}
+                  {language === 'ur' ? 'ایڈمن ای میل' : 'Admin Email:'}
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -403,7 +403,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
 
               <div>
                 <label className="text-xs font-bold text-zinc-300 block mb-1">
-                  {language === 'ur' ? 'پاس ورڈ (Password):' : 'Password:'}
+                  {language === 'ur' ? 'پاس ورڈ' : 'Password:'}
                 </label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -422,7 +422,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                 type="submit"
                 className="w-full btn-neon-pink py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(255,22,143,0.5)] hover:shadow-[0_0_30px_rgba(255,22,143,0.8)] transition-all"
               >
-                {language === 'ur' ? 'لاگ ان کریں (Login to Dashboard)' : 'Login to Dashboard'}
+                {language === 'ur' ? 'لاگ ان کریں' : 'Login to Dashboard'}
               </button>
             </form>
           </div>
@@ -442,7 +442,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                 }`}
               >
                 <LayoutDashboard className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">{language === 'ur' ? 'ڈیش بورڈ (Overview)' : 'Dashboard Overview'}</span>
+                <span className="whitespace-nowrap">{language === 'ur' ? 'ڈیش بورڈ' : 'Dashboard Overview'}</span>
               </button>
 
               <button
@@ -538,53 +538,53 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="p-4 rounded-2xl bg-[#171017] border border-[#2e1a2b] shadow-md space-y-1">
                       <div className="flex items-center justify-between text-xs text-zinc-400">
-                        <span>کل آرڈرز (Total Orders)</span>
+                        <span>{language === 'ur' ? 'کل آرڈرز' : 'Total Orders'}</span>
                         <ShoppingBag className="w-4 h-4 text-[#FF168F]" />
                       </div>
                       <div className="font-mono text-2xl font-extrabold text-white">
                         {totalOrdersCount}
                       </div>
                       <div className="text-[11px] text-emerald-400 font-semibold">
-                        {pendingOrdersCount} زیر التوا (Pending)
+                        {pendingOrdersCount} {language === 'ur' ? 'زیر التوا' : 'Pending'}
                       </div>
                     </div>
 
                     <div className="p-4 rounded-2xl bg-[#171017] border border-[#2e1a2b] shadow-md space-y-1">
                       <div className="flex items-center justify-between text-xs text-zinc-400">
-                        <span>کل ریونیو / فروخت (Revenue)</span>
+                        <span>{language === 'ur' ? 'کل فروخت' : 'Total Revenue'}</span>
                         <TrendingUp className="w-4 h-4 text-[#FF168F]" />
                       </div>
                       <div className="font-mono text-2xl font-extrabold text-[#FF168F]">
                         Rs. {totalRevenue.toLocaleString()}
                       </div>
                       <div className="text-[11px] text-zinc-400 font-semibold">
-                        100% Cash On Delivery
+                        {language === 'ur' ? 'کیش آن ڈیلیوری' : '100% Cash On Delivery'}
                       </div>
                     </div>
 
                     <div className="p-4 rounded-2xl bg-[#171017] border border-[#2e1a2b] shadow-md space-y-1">
                       <div className="flex items-center justify-between text-xs text-zinc-400">
-                        <span>کسٹمرز (Customers)</span>
+                        <span>{language === 'ur' ? 'کسٹمرز' : 'Total Customers'}</span>
                         <Users className="w-4 h-4 text-[#FF168F]" />
                       </div>
                       <div className="font-mono text-2xl font-extrabold text-white">
                         {customersList.length}
                       </div>
                       <div className="text-[11px] text-zinc-400">
-                        مجموعی خریدار
+                        {language === 'ur' ? 'مجموعی خریدار' : 'Registered Buyers'}
                       </div>
                     </div>
 
                     <div className="p-4 rounded-2xl bg-[#171017] border border-[#2e1a2b] shadow-md space-y-1">
                       <div className="flex items-center justify-between text-xs text-zinc-400">
-                        <span>مجموعی پراڈکٹس (Catalog)</span>
+                        <span>{language === 'ur' ? 'مجموعی پراڈکٹس' : 'Total Products'}</span>
                         <Package className="w-4 h-4 text-[#FF168F]" />
                       </div>
                       <div className="font-mono text-2xl font-extrabold text-white">
                         {products.length}
                       </div>
                       <div className="text-[11px] text-zinc-400">
-                        فعال آرٹیکلز
+                        {language === 'ur' ? 'فعال آرٹیکلز' : 'Active Catalog'}
                       </div>
                     </div>
                   </div>
@@ -594,20 +594,22 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                     <div className="flex items-center justify-between">
                       <h3 className="font-serif text-base font-bold text-white flex items-center gap-2">
                         <ShoppingBag className="w-4 h-4 text-[#FF168F]" />
-                        <span>حالیہ موصول شدہ آرڈرز (Recent Orders)</span>
+                        <span>{language === 'ur' ? 'حالیہ آرڈرز' : 'Recent Orders'}</span>
                       </h3>
                       <button
                         type="button"
                         onClick={() => setActiveTab('orders')}
                         className="text-xs text-[#FF8BC8] hover:underline font-bold"
                       >
-                        تمام دیکھیں →
+                        {language === 'ur' ? 'تمام دیکھیں →' : 'View All →'}
                       </button>
                     </div>
 
                     {orders.length === 0 ? (
                       <div className="text-center py-8 text-xs text-zinc-400">
-                        ابھی تک کوئی آرڈر موصول نہیں ہوا۔ جیسے ہی کوئی کسٹمر آرڈر کرے گا، یہاں دکھائی دے گا!
+                        {language === 'ur'
+                          ? 'ابھی تک کوئی آرڈر موصول نہیں ہوا۔ جیسے ہی کوئی کسٹمر آرڈر کرے گا، یہاں دکھائی دے گا!'
+                          : 'No orders received yet. Newly placed orders will appear here.'}
                       </div>
                     ) : (
                       <div className="space-y-3">
@@ -624,7 +626,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                                 <span className="text-zinc-400">({ord.customer.phone})</span>
                               </div>
                               <div className="text-zinc-400 text-[11px] mt-0.5">
-                                {ord.items.length} آئٹمز · {ord.customer.city}
+                                {ord.items.length} {language === 'ur' ? 'آئٹمز' : 'items'} · {ord.customer.city}
                               </div>
                             </div>
 

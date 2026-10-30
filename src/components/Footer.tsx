@@ -116,12 +116,12 @@ export const Footer: React.FC<FooterProps> = ({
             <ul className="space-y-2 text-xs text-zinc-300">
               <li>
                 <button onClick={() => onOpenInfoPage?.('about')} className="hover:text-[#FF168F] transition-colors">
-                  About Us (ہمارے بارے میں)
+                  About Us
                 </button>
               </li>
               <li>
                 <button onClick={() => onOpenInfoPage?.('contact')} className="hover:text-[#FF168F] transition-colors">
-                  Contact Us (رابطہ کریں)
+                  Contact Us
                 </button>
               </li>
               <li>
@@ -164,7 +164,7 @@ export const Footer: React.FC<FooterProps> = ({
               >
                 <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
-                  WhatsApp: {BRAND.contact.whatsappFormatted}
+                  WhatsApp Support
                 </span>
               </a>
             </div>

@@ -432,7 +432,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                 className="w-full py-2.5 px-3 rounded-xl bg-[#171017] hover:bg-[#FF168F] border border-[#FF168F]/40 text-[#FF8BC8] hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <ShieldCheck className="w-4 h-4 text-[#FF168F] group-hover:text-white" />
-                <span>🔐 {language === 'ur' ? 'ایڈمن ڈیش بورڈ (Owner Portal)' : 'Owner Admin Dashboard'}</span>
+                <span>🔐 {language === 'ur' ? 'ایڈمن ڈیش بورڈ' : 'Owner Admin Dashboard'}</span>
               </button>
             )}
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, Search, Menu, X, Sparkles, ChevronDown, User, MessageCircle, Globe, Camera } from 'lucide-react';
+import { ShoppingCart, Heart, Search, Menu, X, Sparkles, ChevronDown, User, MessageCircle, Globe, Camera, ShieldCheck } from 'lucide-react';
 import { BRAND } from '../data/constants';
 import { Currency, CurrencyCode, UserAccount, Language } from '../types';
 import { CURRENCIES } from '../data/products';
@@ -18,6 +18,7 @@ interface HeaderProps {
   onNavigateHome: () => void;
   onOpenSidebar: () => void;
   onOpenAuth: () => void;
+  onOpenAdminPanel?: () => void;
   currentUser: UserAccount | null;
   language: Language;
   onSelectLanguage: (lang: Language) => void;
@@ -36,6 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateHome,
   onOpenSidebar,
   onOpenAuth,
+  onOpenAdminPanel,
   currentUser,
   language,
   onSelectLanguage,
@@ -105,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onOpenAuth}
               className="relative group p-0.5 rounded-full border-2 border-[#FF168F] hover:border-[#FF8BC8] shadow-[0_0_12px_rgba(255,22,143,0.4)] hover:shadow-[0_0_20px_rgba(255,22,143,0.8)] transition-all shrink-0 focus:outline-none"
               aria-label="Profile Picture & Account"
-              title={currentUser?.avatar ? (language === 'ur' ? `${currentUser.fullName} - تصویر تبدیل کریں` : `${currentUser.fullName} - Change Profile Picture`) : (language === 'ur' ? 'اپنی پروفائل تصویر لگائیں' : 'Upload Profile Picture')}
+              title={currentUser?.avatar ? (language === 'ur' ? `${currentUser.fullName} - کسٹمر اکاؤنٹ` : `${currentUser.fullName} - Customer Account`) : (language === 'ur' ? 'کسٹمر اکاؤنٹ' : 'Customer Account')}
             >
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden bg-[#171017] flex items-center justify-center relative">
                 {currentUser?.avatar ? (
@@ -120,11 +122,25 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 )}
               </div>
-              {/* Miniature camera badge indicator on avatar */}
               <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#FF168F] text-white flex items-center justify-center shadow-[0_0_6px_#FF168F] border border-black">
                 <Camera className="w-2.5 h-2.5" />
               </div>
             </button>
+
+            {/* Admin Panel Quick Access Button */}
+            {onOpenAdminPanel && (
+              <button
+                type="button"
+                onClick={onOpenAdminPanel}
+                className="px-2.5 py-1.5 rounded-xl bg-[#171017] hover:bg-[#FF168F] border border-[#FF168F] text-[#FF8BC8] hover:text-white text-xs font-bold transition-all shadow-[0_0_12px_rgba(255,22,143,0.3)] flex items-center gap-1 shrink-0"
+                title={language === 'ur' ? 'ایڈمن کنٹرول ڈیش بورڈ کھولیں' : 'Open Admin Panel Dashboard'}
+              >
+                <ShieldCheck className="w-4 h-4 text-[#FF168F] group-hover:text-white" />
+                <span className="hidden sm:inline font-bold">
+                  {language === 'ur' ? 'ایڈمن' : 'Admin'}
+                </span>
+              </button>
+            )}
 
             {/* Brand Title */}
             <button

@@ -122,19 +122,77 @@ export default function App() {
     onlyInStock: false,
   });
 
-  // Orders State with localStorage persistence
+  // Orders State with localStorage persistence (Starts completely clean with 0 dummy orders)
   const [placedOrders, setPlacedOrders] = useState<PlacedOrder[]>(() => {
     try {
       const saved = localStorage.getItem('sba_orders');
-      return saved ? JSON.parse(saved) : [];
+      if (saved) {
+        const parsed: PlacedOrder[] = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Filter out old sample/dummy orders for Sana Ahmed or Zainab Malik
+          const realOrders = parsed.filter(
+            (o) =>
+              !['SBA-924182', 'SBA-815302'].includes(o.orderId) &&
+              !['Sana Ahmed', 'Zainab Malik'].includes(o.customer?.fullName)
+          );
+          return realOrders;
+        }
+      }
     } catch {
-      return [];
+      // fallback
     }
+    return [];
   });
+
+  // Clean local storage on mount to ensure dummy orders are permanently removed
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('sba_orders');
+      if (saved) {
+        const parsed: PlacedOrder[] = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const cleaned = parsed.filter(
+            (o) =>
+              !['SBA-924182', 'SBA-815302'].includes(o.orderId) &&
+              !['Sana Ahmed', 'Zainab Malik'].includes(o.customer?.fullName)
+          );
+          localStorage.setItem('sba_orders', JSON.stringify(cleaned));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  // Sync orders across windows/tabs instantly
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const saved = localStorage.getItem('sba_orders');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) setPlacedOrders(parsed);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Save placed orders to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('sba_orders', JSON.stringify(placedOrders));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [placedOrders]);
 
   // Store Settings & Banners State
   const [announcementText, setAnnouncementText] = useState<string>(() => {
-    return localStorage.getItem('sba_announcement') || '🌸💖 100% Cash on Delivery Across Pakistan | WhatsApp Orders: 0301 3331824 | 10% Off With Referral Code: REF10 💖🌸';
+    return localStorage.getItem('sba_announcement') || '🌸💖 100% Cash on Delivery Across Pakistan | Referral Discount Code: REF10 💖🌸';
   });
 
   const [deliveryFee, setDeliveryFee] = useState<number>(() => {
@@ -510,6 +568,7 @@ export default function App() {
         }}
         onOpenSidebar={() => setIsSidebarOpen(true)}
         onOpenAuth={() => setIsCustomerAccountOpen(true)}
+        onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
         currentUser={currentUser}
         language={language}
         onSelectLanguage={handleSelectLanguage}
@@ -565,7 +624,7 @@ export default function App() {
         onOpenLookbook={() => setIsLookbookOpen(true)}
         onOpenInfoPage={(p) => setInfoPage(p)}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
-        isAdmin={isAdmin}
+        isAdmin={true}
       />
 
       {/* Product Detail Modal */}
@@ -668,6 +727,7 @@ export default function App() {
         language={language}
         onLogin={handleLogin}
         onLogout={handleLogout}
+        onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
       />
 
       {/* Public Store Policy & Contact Info Pages Modal */}
@@ -697,7 +757,7 @@ export default function App() {
         onSelectLanguage={handleSelectLanguage}
         onOpenAuth={() => setIsCustomerAccountOpen(true)}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
-        isAdmin={isAdmin}
+        isAdmin={true}
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}
       />

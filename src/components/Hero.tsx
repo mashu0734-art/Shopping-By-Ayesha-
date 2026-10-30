@@ -55,15 +55,15 @@ export const Hero: React.FC<HeroProps> = ({
           <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#080509] border border-[#FF168F] shadow-[0_0_12px_rgba(255,22,143,0.4)]">
             <span className="w-2 h-2 rounded-full bg-[#FF168F] animate-ping" />
             <span className="text-xs font-bold uppercase tracking-wider text-[#FFD6EA]">
-              {language === 'ur' ? '100% کیش آن ڈیلیوری سہولت (Cash on Delivery)' : '100% Cash On Delivery Only'}
+              {language === 'ur' ? '100% کیش آن ڈیلیوری سہولت' : '100% Cash On Delivery Only'}
             </span>
           </div>
 
-          {/* Greeting - Completed in ONE single line */}
+          {/* Greeting */}
           <div className="w-full flex items-center justify-center overflow-x-hidden">
             <h2
               className="text-[12px] xs:text-[14px] sm:text-xl md:text-2xl font-bold text-white tracking-tight sm:tracking-normal whitespace-nowrap leading-tight drop-shadow-[0_0_10px_rgba(255,22,143,0.5)] select-none text-center"
-              dir="rtl"
+              dir={language === 'ur' ? 'rtl' : 'ltr'}
             >
               {t.hero.noticeGreeting}
             </h2>

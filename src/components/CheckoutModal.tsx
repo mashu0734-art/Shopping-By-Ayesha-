@@ -299,7 +299,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 {/* Promo / Reference Discount Box */}
                 <div className="pt-3 border-t border-[#2e1a2b] space-y-1.5">
                   <label className="text-[11px] font-semibold text-[#FF8BC8] uppercase tracking-wider block">
-                    {language === 'ur' ? 'پرومو کوڈ / ریفرنس ڈسکاؤنٹ (10%)' : 'Promo Code / Reference (10% Off)'}
+                    {language === 'ur' ? 'پرومو کوڈ / ریفرنس ڈسکاؤنٹ' : 'Promo Code / Reference Discount'}
                   </label>
                   <div className="flex gap-2">
                     <input
@@ -341,13 +341,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                   {calculatedDiscount > 0 && (
                     <div className="flex justify-between text-[#FF8BC8]">
-                      <span>{language === 'ur' ? 'ریفرنس / پرومو ڈسکاؤنٹ (10%)' : 'Reference Discount (10%)'}</span>
+                      <span>{language === 'ur' ? 'ریفرنس / پرومو ڈسکاؤنٹ' : 'Reference Discount'}</span>
                       <span className="font-mono tabular-nums">-{currency.symbol}{calculatedDiscount.toFixed(0)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between">
-                    <span>Delivery Charges (Rs. 300)</span>
+                    <span>{language === 'ur' ? 'ڈلیوری فیس' : 'Delivery Charges'} (Rs. 300)</span>
                     <span className="font-mono text-white tabular-nums">
                       {currency.symbol}{shipping.toFixed(0)}
                     </span>

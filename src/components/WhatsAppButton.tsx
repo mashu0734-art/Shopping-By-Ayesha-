@@ -8,7 +8,7 @@ interface WhatsAppButtonProps {
   language?: Language;
 }
 
-export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({ language = 'ur' }) => {
+export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({ language = 'en' }) => {
   const t = useTranslation(language);
 
   const handleClick = () => {
