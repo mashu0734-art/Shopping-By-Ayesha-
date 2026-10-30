@@ -164,19 +164,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             </h2>
           </div>
 
-          {/* Action Group: Add Product (Clean and prominent, language buttons removed as requested) */}
-          <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
-            {onOpenProductManager && (
-              <button
-                onClick={onOpenProductManager}
-                className="btn-neon-pink px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_18px_rgba(255,22,143,0.5)] shrink-0 hover:shadow-[0_0_25px_rgba(255,22,143,0.8)] transition-all cursor-pointer"
-                title="Add product photo and details"
-              >
-                <Plus className="w-4 h-4" />
-                <span>{t.product.addProduct}</span>
-              </button>
-            )}
-          </div>
         </div>
 
         {/* Filter Controls Bar (Search & Sort controls) */}

@@ -6,10 +6,16 @@ interface FooterProps {
   onSelectCategory: (category: string) => void;
   onOpenLookbook?: () => void;
   onOpenProductManager?: () => void;
+  onOpenInfoPage?: (page: 'about' | 'contact' | 'returns' | 'privacy' | 'terms') => void;
+  onOpenAdminPanel?: () => void;
+  isAdmin?: boolean;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onSelectCategory,
+  onOpenInfoPage,
+  onOpenAdminPanel,
+  isAdmin = false,
 }) => {
   return (
     <footer className="bg-[#080509] border-t border-[#2e1a2b] text-white pt-16 pb-12">
@@ -19,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
           
           {/* Brand Col */}
-          <div className="lg:col-span-5 space-y-4">
+          <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full p-[1.5px] bg-gradient-to-tr from-[#FF168F] to-[#FF2D9B] shadow-[0_0_15px_rgba(255,22,143,0.5)]">
                 <img
@@ -61,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
           </div>
 
-          {/* Departments strictly Dresses, Jewellery, Bags */}
+          {/* Departments */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#FF8BC8]">
               Departments
@@ -102,64 +108,94 @@ export const Footer: React.FC<FooterProps> = ({
             </ul>
           </div>
 
-          {/* Contact Section: Gmail mashu0734@gmail.com & WhatsApp 03013331824 */}
-          <div className="lg:col-span-4 space-y-3">
+          {/* Customer Care & Policies */}
+          <div className="lg:col-span-2 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#FF8BC8]">
-              Contact
+              Customer Care
             </h4>
-            <div className="space-y-3 text-xs text-zinc-300">
-              
-              {/* Email */}
+            <ul className="space-y-2 text-xs text-zinc-300">
+              <li>
+                <button onClick={() => onOpenInfoPage?.('about')} className="hover:text-[#FF168F] transition-colors">
+                  About Us (ہمارے بارے میں)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onOpenInfoPage?.('contact')} className="hover:text-[#FF168F] transition-colors">
+                  Contact Us (رابطہ کریں)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onOpenInfoPage?.('returns')} className="hover:text-[#FF168F] transition-colors">
+                  Return & Exchange
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onOpenInfoPage?.('privacy')} className="hover:text-[#FF168F] transition-colors">
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onOpenInfoPage?.('terms')} className="hover:text-[#FF168F] transition-colors">
+                  Terms & Conditions
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Section */}
+          <div className="lg:col-span-3 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-[#FF8BC8]">
+              Direct Contact
+            </h4>
+            <div className="space-y-2.5 text-xs text-zinc-300">
               <a
                 href={`mailto:${BRAND.contact.email}`}
-                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#171017] border border-[#2e1a2b] hover:border-[#FF168F]/60 text-zinc-300 hover:text-white transition-all group"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#171017] border border-[#2e1a2b] hover:border-[#FF168F]/60 text-zinc-300 hover:text-white transition-all group"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#FF168F]/10 border border-[#FF168F]/30 flex items-center justify-center shrink-0 group-hover:bg-[#FF168F]/20 transition-colors">
-                  <Mail className="w-4 h-4 text-[#FF168F]" />
-                </div>
-                <div className="overflow-hidden">
-                  <span className="text-[10px] text-zinc-500 uppercase block font-semibold">Email / Gmail</span>
-                  <span className="font-mono text-xs text-white group-hover:text-[#FF168F] transition-colors truncate block">
-                    {BRAND.contact.email}
-                  </span>
-                </div>
+                <Mail className="w-4 h-4 text-[#FF168F] shrink-0" />
+                <span className="font-mono text-[11px] truncate block">{BRAND.contact.email}</span>
               </a>
 
-              {/* WhatsApp */}
               <a
                 href={`https://wa.me/${BRAND.contact.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#0e2716]/60 border border-emerald-600/40 hover:border-emerald-500 text-zinc-300 hover:text-white transition-all group"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#0e2716]/60 border border-emerald-600/40 hover:border-emerald-500 text-zinc-300 hover:text-white transition-all group"
               >
-                <div className="w-8 h-8 rounded-lg bg-emerald-950 border border-emerald-500/40 flex items-center justify-center shrink-0 group-hover:bg-emerald-900 transition-colors">
-                  <MessageCircle className="w-4 h-4 text-emerald-400" />
-                </div>
-                <div>
-                  <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
-                    WhatsApp Order & Support
-                  </span>
-                </div>
+                <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  WhatsApp: {BRAND.contact.whatsappFormatted}
+                </span>
               </a>
-
-
-
             </div>
           </div>
 
         </div>
 
-        {/* Bottom Tier: Payment Badges & Copyright */}
+        {/* Bottom Tier: Payment Badges, Admin Link (Owner only) & Copyright */}
         <div className="pt-8 border-t border-[#2e1a2b] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
           <div className="flex items-center gap-2 text-zinc-400">
             <span>© {new Date().getFullYear()}</span>
             <strong className="text-white font-serif">{BRAND.name}</strong>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] text-zinc-400">
-            <span className="hover:text-white cursor-pointer transition-colors">Cash On Delivery Policy</span>
+          <div className="flex items-center gap-4 text-[11px] text-zinc-400 flex-wrap justify-center">
+            <span onClick={() => onOpenInfoPage?.('returns')} className="hover:text-white cursor-pointer transition-colors">100% Cash On Delivery</span>
             <span>·</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Authenticity Guarantee</span>
+            <span onClick={() => onOpenInfoPage?.('privacy')} className="hover:text-white cursor-pointer transition-colors">Authenticity Guarantee</span>
+            {isAdmin && onOpenAdminPanel && (
+              <>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={onOpenAdminPanel}
+                  className="px-2 py-0.5 rounded bg-[#171017] border border-[#FF168F]/40 hover:border-[#FF168F] text-[#FF8BC8] hover:text-white transition-all font-semibold flex items-center gap-1"
+                  title="Private Owner Admin Panel"
+                >
+                  <span>🔐 Admin Portal</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
 

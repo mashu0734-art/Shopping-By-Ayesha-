@@ -154,19 +154,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <span>{t.product.quickView}</span>
           </button>
 
-          {onOpenQuickPhotoChange && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenQuickPhotoChange(product);
-              }}
-              className="py-2 px-2.5 rounded-lg bg-[#171017]/95 hover:bg-[#FF168F] border border-[#FF168F]/70 text-white text-[11px] font-semibold flex items-center justify-center gap-1 shadow-lg transition-all"
-              title="Upload your own picture for this product"
-            >
-              <Camera className="w-3.5 h-3.5 text-[#FFD6EA]" />
-              <span className="hidden sm:inline">{t.product.changePhoto}</span>
-            </button>
-          )}
         </div>
       </div>
 

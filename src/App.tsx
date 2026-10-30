@@ -14,6 +14,9 @@ import { ProductManagerModal } from './components/ProductManagerModal';
 import { QuickPhotoChangeModal } from './components/QuickPhotoChangeModal';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { AuthModal } from './components/AuthModal';
+import { AdminPanelModal } from './components/AdminPanelModal';
+import { CustomerAccountModal } from './components/CustomerAccountModal';
+import { InfoPagesModal } from './components/InfoPagesModal';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { INITIAL_PRODUCTS, CURRENCIES } from './data/products';
 import { Product, CartItem, Currency, CurrencyCode, FilterState, PlacedOrder, UserAccount, Language } from './types';
@@ -119,6 +122,41 @@ export default function App() {
     onlyInStock: false,
   });
 
+  // Orders State with localStorage persistence
+  const [placedOrders, setPlacedOrders] = useState<PlacedOrder[]>(() => {
+    try {
+      const saved = localStorage.getItem('sba_orders');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Store Settings & Banners State
+  const [announcementText, setAnnouncementText] = useState<string>(() => {
+    return localStorage.getItem('sba_announcement') || '🌸💖 100% Cash on Delivery Across Pakistan | WhatsApp Orders: 0301 3331824 | 10% Off With Referral Code: REF10 💖🌸';
+  });
+
+  const [deliveryFee, setDeliveryFee] = useState<number>(() => {
+    const saved = localStorage.getItem('sba_delivery_fee');
+    return saved ? parseFloat(saved) : 300;
+  });
+
+  const [promoCodes, setPromoCodes] = useState<Record<string, { discountPercent?: number; discountFixed?: number; description?: string }>>(() => {
+    try {
+      const saved = localStorage.getItem('sba_promos');
+      return saved ? JSON.parse(saved) : {
+        REF10: { discountPercent: 10, description: '10% Referral Discount' },
+        AYESHA10: { discountPercent: 10, description: '10% Special Discount' },
+      };
+    } catch {
+      return {
+        REF10: { discountPercent: 10, description: '10% Referral Discount' },
+        AYESHA10: { discountPercent: 10, description: '10% Special Discount' },
+      };
+    }
+  });
+
   // Modal States
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -129,13 +167,16 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isLookbookOpen, setIsLookbookOpen] = useState(false);
   const [isProductManagerOpen, setIsProductManagerOpen] = useState(false);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+  const [isCustomerAccountOpen, setIsCustomerAccountOpen] = useState(false);
+  const [infoPage, setInfoPage] = useState<'about' | 'contact' | 'returns' | 'privacy' | 'terms' | null>(null);
 
   const handleOpenProductManager = () => {
-    setIsProductManagerOpen(true);
+    setIsAdminPanelOpen(true);
   };
 
   const handleCloseProductManager = () => {
-    setIsProductManagerOpen(false);
+    setIsAdminPanelOpen(false);
   };
 
   const [quickPhotoProduct, setQuickPhotoProduct] = useState<Product | null>(null);
@@ -370,7 +411,52 @@ export default function App() {
   };
 
   const handleOrderSuccess = (order: PlacedOrder) => {
-    showNotification(`Order ${order.orderId} Confirmed! Check your email for tracking details.`);
+    const updated = [order, ...placedOrders];
+    setPlacedOrders(updated);
+    try {
+      localStorage.setItem('sba_orders', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+    showNotification(`🎉 آرڈر ${order.orderId} کامیابی سے ہو گیا ہے!`);
+  };
+
+  const handleUpdateOrderStatus = (orderId: string, newStatus: PlacedOrder['status']) => {
+    setPlacedOrders((prev) => {
+      const updated = prev.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o));
+      try {
+        localStorage.setItem('sba_orders', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+    showNotification(`آرڈر ${orderId} اسٹیٹس اپڈیٹ ہو کر "${newStatus}" ہو گیا ہے!`);
+  };
+
+  const handleUpdateAnnouncement = (text: string) => {
+    setAnnouncementText(text);
+    localStorage.setItem('sba_announcement', text);
+    showNotification('بینر ٹیکسٹ اپڈیٹ ہو گیا!');
+  };
+
+  const handleUpdateDeliveryFee = (fee: number) => {
+    setDeliveryFee(fee);
+    localStorage.setItem('sba_delivery_fee', fee.toString());
+    showNotification(`ڈلیوری چارجز Rs. ${fee} اپڈیٹ ہو گئے!`);
+  };
+
+  const handleAddPromoCode = (code: string, percent: number, description: string) => {
+    setPromoCodes((prev) => {
+      const updated = { ...prev, [code.toUpperCase()]: { discountPercent: percent, description } };
+      try {
+        localStorage.setItem('sba_promos', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+    showNotification(`نیا پرو مو کوڈ ${code.toUpperCase()} فعال ہو گیا!`);
   };
 
   const handleSelectCategoryFilter = (category: string, subcategory: string = 'All') => {
@@ -391,6 +477,11 @@ export default function App() {
   };
 
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const isAdmin =
+    Boolean(currentUser?.email?.toLowerCase().includes('mashu0734@gmail.com')) ||
+    Boolean(currentUser?.email?.toLowerCase().includes('admin')) ||
+    localStorage.getItem('sba_admin_auth') === 'true';
 
   return (
     <div className="min-h-screen bg-[#080509] text-white flex flex-col font-sans selection:bg-[#FF168F] selection:text-white">
@@ -418,7 +509,7 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenSidebar={() => setIsSidebarOpen(true)}
-        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAuth={() => setIsCustomerAccountOpen(true)}
         currentUser={currentUser}
         language={language}
         onSelectLanguage={handleSelectLanguage}
@@ -462,8 +553,6 @@ export default function App() {
           onToggleWishlist={handleToggleWishlist}
           onAddToCart={(product, color, size) => handleAddToCart(product, color, size, 1)}
           onQuickView={(product) => setSelectedProduct(product)}
-          onOpenQuickPhotoChange={(product) => setQuickPhotoProduct(product)}
-          onOpenProductManager={handleOpenProductManager}
         />
 
         {/* VIP Circle Newsletter Section */}
@@ -474,7 +563,9 @@ export default function App() {
       <Footer
         onSelectCategory={handleCategorySelect}
         onOpenLookbook={() => setIsLookbookOpen(true)}
-        onOpenProductManager={handleOpenProductManager}
+        onOpenInfoPage={(p) => setInfoPage(p)}
+        onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
+        isAdmin={isAdmin}
       />
 
       {/* Product Detail Modal */}
@@ -545,18 +636,45 @@ export default function App() {
         onShopCategory={handleCategorySelect}
       />
 
-      {/* Owner Product Manager & Upload Modal */}
-      <ProductManagerModal
-        isOpen={isProductManagerOpen}
-        onClose={handleCloseProductManager}
+      {/* Private Owner Admin Panel Dashboard Modal */}
+      <AdminPanelModal
+        isOpen={isAdminPanelOpen}
+        onClose={() => setIsAdminPanelOpen(false)}
         products={products}
+        orders={placedOrders}
         language={language}
-        onSelectLanguage={handleSelectLanguage}
+        announcementText={announcementText}
+        deliveryFee={deliveryFee}
+        promoCodes={promoCodes}
         onAddProduct={handleAddProduct}
         onUpdateProduct={handleUpdateProduct}
         onDeleteProduct={handleDeleteProduct}
         onResetCatalog={handleResetCatalog}
-        onOpenQuickPhotoChange={(p) => setQuickPhotoProduct(p)}
+        onUpdateOrderStatus={handleUpdateOrderStatus}
+        onUpdateAnnouncement={handleUpdateAnnouncement}
+        onUpdateDeliveryFee={handleUpdateDeliveryFee}
+        onAddPromoCode={handleAddPromoCode}
+      />
+
+      {/* Customer Account ("My Account") Modal */}
+      <CustomerAccountModal
+        isOpen={isCustomerAccountOpen || isAuthOpen}
+        onClose={() => {
+          setIsCustomerAccountOpen(false);
+          setIsAuthOpen(false);
+        }}
+        currentUser={currentUser}
+        orders={placedOrders}
+        language={language}
+        onLogin={handleLogin}
+        onLogout={handleLogout}
+      />
+
+      {/* Public Store Policy & Contact Info Pages Modal */}
+      <InfoPagesModal
+        page={infoPage}
+        onClose={() => setInfoPage(null)}
+        language={language}
       />
 
       {/* Quick 1-Click Photo Replacement Modal */}
@@ -577,20 +695,11 @@ export default function App() {
         currentUser={currentUser}
         language={language}
         onSelectLanguage={handleSelectLanguage}
-        onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenProductManager={handleOpenProductManager}
+        onOpenAuth={() => setIsCustomerAccountOpen(true)}
+        onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
+        isAdmin={isAdmin}
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}
-      />
-
-      {/* Sign Up / Login Modal */}
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-        currentUser={currentUser}
-        language={language}
-        onLogin={handleLogin}
-        onLogout={handleLogout}
       />
 
       {/* Floating 1-Click WhatsApp Quick Order Button */}

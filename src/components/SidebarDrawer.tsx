@@ -15,6 +15,8 @@ interface SidebarDrawerProps {
   onSelectLanguage: (lang: Language) => void;
   onOpenAuth: () => void;
   onOpenProductManager?: () => void;
+  onOpenAdminPanel?: () => void;
+  isAdmin?: boolean;
   onOpenWishlist: () => void;
   onOpenCart: () => void;
 }
@@ -29,6 +31,8 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
   language,
   onSelectLanguage,
   onOpenAuth,
+  onOpenAdminPanel,
+  isAdmin = false,
   onOpenWishlist,
   onOpenCart,
 }) => {
@@ -416,7 +420,31 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
 
           </div>
 
+          {/* Drawer Footer */}
+          <div className="p-4 border-t border-[#2e1a2b] bg-[#120a13] space-y-2">
+            {isAdmin && onOpenAdminPanel && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenAdminPanel();
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-[#171017] hover:bg-[#FF168F] border border-[#FF168F]/40 text-[#FF8BC8] hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                <ShieldCheck className="w-4 h-4 text-[#FF168F] group-hover:text-white" />
+                <span>🔐 {language === 'ur' ? 'ایڈمن ڈیش بورڈ (Owner Portal)' : 'Owner Admin Dashboard'}</span>
+              </button>
+            )}
 
+            <button
+              type="button"
+              onClick={handleWhatsAppChat}
+              className="w-full py-2.5 px-3 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 text-emerald-200 text-xs font-bold transition-all flex items-center justify-center gap-2"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-400" />
+              <span>{language === 'ur' ? 'واٹس ایپ پر رابطہ کریں' : 'WhatsApp Support'}</span>
+            </button>
+          </div>
 
         </div>
       </div>
